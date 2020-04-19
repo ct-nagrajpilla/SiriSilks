@@ -28,7 +28,6 @@ public interface APIService {
     @POST
     Call<String> getApiResult(@Url String url, @FieldMap Map<String, String> fields);
 
-
     @Multipart
     @POST
     Call<String> uploadImage(@Url String baseUrl, @Part MultipartBody.Part file, @PartMap() Map<String, String> fields);
