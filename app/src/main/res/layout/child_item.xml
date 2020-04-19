@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/group_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5sp"
+    android:descendantFocusability="beforeDescendants"
+    android:orientation="vertical"
+    android:padding="20sp"
+    android:tag="sticky"
+    app:cardElevation="5sp">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_subcat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12sp"
+        android:layout_marginLeft="12sp"
+        android:fontFamily="@font/cera_gr_regular"
+        android:padding="8dp"
+        android:textSize="14sp"
+        android:text="maintitle" />
+</androidx.cardview.widget.CardView>
+
+    <!--    android:drawableEnd="@mipmap/arrow_click"
+            android:drawableRight="@mipmap/arrow_click"-->
+
+
+
+
+

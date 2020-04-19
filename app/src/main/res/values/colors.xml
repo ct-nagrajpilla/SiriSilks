@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#800807</color>
+    <color name="colorPrimaryDark">#BB0909</color>
+    <color name="colorAccent">#EE0606</color>
+    <color name="transparent_color">#00000000</color>
+    <color name="title_bg">#80000000</color>
+    <color name="pbr_color">#F80909</color>
+    <color name="lightgray">#888888</color>
+    <color name="darkgray">#575757</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!--echo "# SiriSilks" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/nagarajup/SiriSilks.git
+git push -u origin mastergit remote add origin https://github.com/ct-nagrajpilla/SiriSilks.git-->
+    <!--git remote add origin https://github.com/nagarajup/SiriSilks.git
+git push -u origin master-->
+</resources>

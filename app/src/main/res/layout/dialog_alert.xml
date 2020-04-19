@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="15dp"
+    card_view:cardCornerRadius="0dp"
+    card_view:cardElevation="0dp"
+    card_view:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/alert_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|start"
+            android:layout_margin="5sp"
+            android:layout_weight="1"
+            android:fontFamily="@font/cera_gr_medium"
+            android:text="@string/alert"
+            android:textSize="16sp"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorPrimary" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/alert_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:textColor="@color/darkgray"
+            android:gravity="left"
+            android:paddingBottom="5dp" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_alert_ok"
+            android:layout_width="100dp"
+            android:layout_height="42sp"
+            android:layout_gravity="right"
+            android:background="@android:color/transparent"
+            android:text="@string/ok"
+            android:textColor="@color/colorPrimary"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/lay_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="right|center_vertical"
+            android:paddingRight="5sp"
+            android:visibility="gone">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_alert_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="42sp"
+                android:background="#ffffff"
+                android:padding="5dp"
+                android:text="@android:string/cancel"
+                android:textColor="@color/colorPrimary" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_alert_other"
+                android:layout_width="wrap_content"
+                android:layout_height="42sp"
+                android:background="#ffffff"
+                android:padding="5dp"
+                android:text="SEND"
+                android:textColor="@color/colorPrimary" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
