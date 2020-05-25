@@ -26,12 +26,13 @@
 
     <string name="home">Home</string>
     <string name="wishlist">Wish List</string>
+    <string name="orders">My Orders</string>
     <string name="account">My Account</string>
 
 
 
 
-    <string name="menu">loadallcategories</string>
+    <string name="loadallcategories">loadallcategories</string>
     <string name="host">*.akshayasarees.com</string>
     <string name="base">http://www.akshayasarees.com</string>
     <!--Core base-->
@@ -40,5 +41,8 @@
     <string name="socketErrorMessage">Unable to process your request, please check your internet connection and try again.</string>
     <string name="alert">Alert..!</string>
     <string name="ok">OK</string>
+    <string name="name">name</string>
+    <string name="email">email</string>
+    <string name="mobile">mobile</string>
 
 </resources>

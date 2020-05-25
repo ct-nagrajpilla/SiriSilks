@@ -12,6 +12,11 @@
         android:title="@string/wishlist" />
 
     <item
+        android:id="@+id/navigation_orders"
+        android:icon="@mipmap/bmenu_wishlist"
+        android:title="@string/orders" />
+
+    <item
         android:id="@+id/navigation_account"
         android:icon="@mipmap/bmenu_aacount"
         android:title="@string/account" />

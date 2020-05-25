@@ -32,7 +32,7 @@
                     android:scaleType="fitCenter"
                     android:src="@mipmap/xyzzzzz" />
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/img_fav"
                     android:layout_width="24sp"
                     android:layout_height="24sp"
@@ -82,8 +82,21 @@
                 android:textSize="12sp"
                 android:singleLine="true" />
 
+
+
         </LinearLayout>
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="32sp"
+                android:text="Add To Cart"
+                android:textColor="@color/colorPrimary"
+                android:drawablePadding="5sp"
+                android:drawableTint="@color/colorPrimary"
+                android:padding="5sp"
+                android:textSize="12sp"
+                android:drawableStart="@mipmap/icon_cart"
+                android:background="@color/white"/>
 
 
         </LinearLayout>

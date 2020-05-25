@@ -4,6 +4,7 @@ package com.aniapps.siri;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
@@ -56,10 +57,10 @@ public class Fragment_Home extends Fragment {
     // url to fetch shopping items
     private static final String URL = "https://api.androidhive.info/json/movies_2017.json";
     Integer[] imageId = {R.drawable.aaa, R.drawable.bbb, R.drawable.ccc};
-    private RecyclerView recyclerView, recyclerView1, recyclerView2;
+    private RecyclerView recyclerView, recyclerView1;
     private ViewPager imgViewPager;
     private List<Movie> itemsList;
-    private StoreAdapter mAdapter;
+    private MainCatAdapter mAdapter;
     private ProdcutsAdapter pAdapter;
     Context context;
     LinearLayout dot_layout;
@@ -92,15 +93,13 @@ public class Fragment_Home extends Fragment {
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView1 = view.findViewById(R.id.recycler_view1);
-        recyclerView2 = view.findViewById(R.id.recycler_view2);
         itemsList = new ArrayList<>();
-        mAdapter = new StoreAdapter(getActivity(), itemsList);
+        mAdapter = new MainCatAdapter(getActivity(), itemsList);
         pAdapter = new ProdcutsAdapter();
         imgViewPager = (ViewPager) view.findViewById(R.id.img_viewpager);
         dot_layout = (LinearLayout) view.findViewById(R.id.dot_layout);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView1.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         //RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
         //recyclerView.setLayoutManager(mLayoutManager);
         // recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(8), true));
@@ -108,10 +107,8 @@ public class Fragment_Home extends Fragment {
         recyclerView1.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
         recyclerView1.setAdapter(pAdapter);
-        recyclerView2.setAdapter(pAdapter);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView1.setNestedScrollingEnabled(false);
-        recyclerView2.setNestedScrollingEnabled(false);
 
         imgViewPager.getLayoutParams().height = (int) ((float) ((getActivity()
                 .getResources().getDisplayMetrics().widthPixels)) / 1.77);
@@ -358,7 +355,7 @@ public class Fragment_Home extends Fragment {
      * RecyclerView adapter class to render items
      * This class can go into another separate class, but for simplicity
      */
-    class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.MyViewHolder> {
+    class MainCatAdapter extends RecyclerView.Adapter<MainCatAdapter.MyViewHolder> {
         private Context context;
         private List<Movie> movieList;
 
@@ -377,7 +374,7 @@ public class Fragment_Home extends Fragment {
         }
 
 
-        public StoreAdapter(Context context, List<Movie> movieList) {
+        public MainCatAdapter(Context context, List<Movie> movieList) {
             this.context = context;
             this.movieList = movieList;
         }
@@ -393,14 +390,15 @@ public class Fragment_Home extends Fragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
             final Movie movie = movieList.get(position);
-            if(position==0){
+            if (position == 0) {
                 holder.name.setText("New Arrivals");
+                holder.name.setTextColor(Color.parseColor("#FFFFFF"));
                 holder.lay_categories.setBackgroundResource(R.drawable.border_view_red);
-            }else{
+            } else {
                 holder.lay_categories.setBackgroundResource(R.drawable.border_view);
 
             }
-          //  holder.name.setText(movie.getTitle());
+            //  holder.name.setText(movie.getTitle());
 
 
           /*  Glide.with(context)

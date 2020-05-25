@@ -2,8 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f1f5f7"
+    android:background="@color/white"
     tools:context=".Fragment_Home">
+
+    <!--    android:background="#f1f5f7"-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,83 +50,51 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#E9E7E8"
             android:clipToPadding="false"
+            android:padding="8sp"
             android:scrollbars="vertical" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-
-            android:paddingTop="10dp">
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:layout_margin="2sp"
+            android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="left"
+                android:layout_centerVertical="true"
+                android:layout_gravity="left"
                 android:padding="5sp"
-                android:textAllCaps="true"
                 android:text="New Arrivals"
+                android:textAllCaps="true"
                 android:textColor="#111"
                 android:textSize="16dp" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:layout_gravity="end"
+                android:background="@drawable/border_viewmore"
                 android:gravity="end"
-                android:padding="5sp"
+                android:padding="4sp"
                 android:text="View More"
                 android:textColor="@color/colorPrimary"
-                android:textSize="16dp" />
+                android:textSize="12dp" />
 
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:scrollbars="vertical" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-
-            android:paddingTop="10dp">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:padding="5sp"
-                android:textAllCaps="true"
-                android:text="Designer Sarees"
-                android:textColor="#111"
-                android:textSize="16dp" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:gravity="end"
-                android:padding="5sp"
-                android:text="View More"
-                android:textColor="@color/colorPrimary"
-                android:textSize="16dp" />
-
-
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:paddingBottom="65dp"
-
             android:scrollbars="vertical" />
 
     </LinearLayout>

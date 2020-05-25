@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:layout_gravity="center"
     android:orientation="horizontal">
 
@@ -11,13 +10,12 @@
         android:id="@+id/menu_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="-4sp"
-        android:layout_marginLeft="-4sp"
         android:layout_marginEnd="5sp"
         android:layout_marginRight="5sp"
+        android:layout_centerVertical="true"
         android:orientation="horizontal">
 
-        <EditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,11 +23,14 @@
             android:drawableLeft="@mipmap/icon_search_edit"
             android:drawablePadding="4dp"
             android:focusable="true"
-            android:hint="Search for product name"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:hint="Search.."
+            android:background="@null"
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:paddingRight="30dp"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/white" />
 
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -40,6 +41,7 @@
             android:layout_margin="4dp"
             android:padding="5dp"
             android:src="@mipmap/icon_close_dashbaord"
+            android:tint="@color/white"
             android:visibility="gone"
             tools:ignore="RtlHardcoded" />
     </FrameLayout>

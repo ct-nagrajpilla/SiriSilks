@@ -5,14 +5,20 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.IdRes;
@@ -20,10 +26,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
@@ -63,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.nav_view2);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         showBadge(this, navigation, R.id.navigation_wishlist, "1");
-        // navigation.getOrCreateBadge(R.id.navigation_wishlist).setNumber(2);
         expandableListView = findViewById(R.id.expandable_menu);
         apiCall();
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -96,129 +104,151 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void removeBadge(BottomNavigationView bottomNavigationView, @IdRes int itemId) {
         BottomNavigationItemView itemView = bottomNavigationView.findViewById(itemId);
-        if (itemView.getChildCount() == 3) {
+        if (itemView.getChildCount() == 4) {
             itemView.removeViewAt(2);
         }
     }
 
 
-    SearchView search;
-    public static int REQUEST_CODE = 999;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        final Handler mHandler = new Handler();
-        getMenuInflater().inflate(R.menu.main, menu);
 
 
-/*
-        final MenuItem item_share = menu.findItem(R.id.action_cart);
-        item_share.setVisible(true);
+    AppCompatEditText searchEditText;
+    FrameLayout menuView;
+    private Menu menu;
+    AppCompatImageView clear;
+    MenuItem menuItem;
 
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        search = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        search.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        ImageView voiceIcon = (ImageView) search.findViewById(androidx.appcompat.R.id.search_voice_btn);
-        voiceIcon.setOnClickListener(new View.OnClickListener() {
+    public boolean onCreateOptionsMenu(Menu menuu) {
+        this.menu = menuu;
+
+        final MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_auction_search, menu);
+        menuItem = menu.findItem(
+                R.id.action_search);
+        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                try {
-                    startActivityForResult(intent, REQUEST_CODE);
-                    //  Log.e("###", "intentn");
-                } catch (ActivityNotFoundException a) {
+            public boolean onMenuItemClick(MenuItem item) {
+               // eventTrack(Bluejack_Auctions.this, "Auctions", "Auctions|Search");
+                return false;
+            }
+        });
+        searchEditText = (AppCompatEditText) MenuItemCompat.getActionView(menuItem).findViewById(R.id.edittext);
+        menuView = (FrameLayout) MenuItemCompat.getActionView(menuItem).findViewById(R.id.menu_view);
+        clear = (AppCompatImageView) MenuItemCompat.getActionView(menuItem).findViewById(R.id.clear);
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               /* if (null != mHighlightArrayAdapter)
+                    mHighlightArrayAdapter.getFilter().filter("");*/
+                searchEditText.setText("");
+            //    search_list.setVisibility(View.GONE);
+                hideKeyboard();
+                MenuItemCompat.collapseActionView(menuItem);
 
-                }
             }
         });
 
-        search.setQueryHint("Enter Product Name");
-        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-              */
-/*  if (null != mainAdapter) {
-                    mainAdapter.filterData(query);
-              *//*
-      search.clearFocus();
-                  */
-/*  expand_flag = true;
-                    expandAll();
-                }*//*
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                return true;
             }
 
             @Override
-            public boolean onQueryTextChange(final String newText) {
-                mHandler.removeCallbacksAndMessages(null);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                      */
-/*  if (null != mainAdapter)
-                            mainAdapter.filterData(newText);
-                        if (newText.equals("")) {
-                            collapseAll();
-                            expand_flag = false;
-                            item_add.setVisible(true);
-                        } else {
-                            expand_flag = true;
-                            expandAll();
-                            if (null != mainAdapter && mainAdapter.getGroupCount() > 0) {
-                                item_add.setVisible(false);
-                            } else {
-                                item_add.setVisible(true);
-                            }
-                        }*//*
-
-                    }
-                }, 100);
-
-                return true;
-            }
-
-
-        });
-
-        search.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
-                    item_share.setVisible(false);
-                   */
-/* cityPicker.setVisibility(View.GONE);
-                    bottom_border.setVisibility(View.GONE);
-                    category_name.setVisibility(View.GONE);*//*
-
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() != 0) {
+                    //searchEditText.setCompoundDrawables(null, null, null, null);
+                    searchEditText.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.icon_search_edit, 0, 0, 0);
+                 /*   if (null != mHighlightArrayAdapter)
+                        mHighlightArrayAdapter.getFilter().filter(s);*/
+                    clear.setVisibility(View.VISIBLE);
                 } else {
-                    */
-/*cityPicker.setVisibility(View.VISIBLE);
-                    bottom_border.setVisibility(View.VISIBLE);
-                    category_name.setVisibility(View.VISIBLE);*//*
-
-                    item_share.setVisible(true);
+                    searchEditText.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.icon_search_edit, 0, 0, 0);
+                  /*  if (null != mHighlightArrayAdapter)
+                        mHighlightArrayAdapter.getFilter().filter("");*/
+                    clear.setVisibility(View.GONE);
                 }
             }
-        });
 
-
-
-        item_share.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(getApplicationContext(),"My Cart",Toast.LENGTH_SHORT).show();
-                return true;
+            public void afterTextChanged(Editable s) {
+
             }
         });
-*/
 
+
+        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                searchEditText.requestFocus();
+                if (searchEditText.requestFocus()) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (null != imm)
+                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                   /* if (null != search_list) {
+                        search_list.setVisibility(View.VISIBLE);
+                    }*/
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                try {
+                    if (searchEditText.hasFocus()) {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+                    }
+                  /*  if (null != mHighlightArrayAdapter)
+                        mHighlightArrayAdapter.getFilter().filter("");*/
+                    searchEditText.setText("");
+                  //  eventTrack(Bluejack_Auctions.this, "Auctions", "Auctions|Search|Close");
+
+                    /*if (serach_flag) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                spage = 1;
+                                GetAuctionsData("", "", "Menu");
+
+                            }
+                        }, 300);
+                    }
+                    search_list.setVisibility(View.GONE);*/
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                return true;
+            }
+
+        });
 
         return super.onCreateOptionsMenu(menu);
     }
 
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_search).setVisible(true);
+        /*if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            menu.getItem(0).setEnabled(false);
+        } else {
+            menu.getItem(0).setEnabled(true);
+        }*/
+        return super.onPrepareOptionsMenu(menu);
+
+    }
+    public void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) this
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -245,6 +275,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     toolbar.setTitle("Wish List");
                     fragment = new Fragment_WishList();
                     break;
+                case R.id.navigation_orders:
+                    toolbar.setTitle("My Oders");
+                    fragment = new Fragment_Orders();
+                    break;
                 case R.id.navigation_account:
                     toolbar.setTitle("My Profile");
                     fragment = new Fragment_Profile();
@@ -256,14 +290,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     };
 
-    /*   private void loadFragment(Fragment fragment) {
-           // load fragment
-           FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-           transaction.replace(R.id.nav_host_fragment, fragment);
-           transaction.addToBackStack(null);
-           transaction.commit();
-       }
-   */
+
 //https://github.com/aurelhubert/ahbottomnavigation
     private boolean loadFragment(Fragment fragment) {
         //switching fragment
@@ -313,8 +340,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void apiCall() {
         Map<String, String> params = new HashMap<>();
-        params.put("action", getResources().getString(R.string.menu));
-        params.put("device_id", getResources().getString(R.string.menu));
+        params.put("action", getResources().getString(R.string.loadallcategories));
+        params.put("device_id", "8fa2d80f9b99dc24");
         params.put("mobile", "9441349123");
         Log.e("####", "JSON OBJ" + params);
         RetrofitClient.getInstance().doBackProcess(MainActivity.this, params, "", new APIResponse() {
@@ -337,11 +364,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         for (int k = 0; k < otherArray.length(); k++) {
                             otherMenus.add(new OtherMenu(otherArray.get(k).toString()));
                         }
-                       /* OtherMenuAdapter adaper = new OtherMenuAdapter(otherMenus);
-                        other_menu.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-                        other_menu.setItemAnimator(new DefaultItemAnimator());
-                        other_menu.setAdapter(adaper);
-*/
+
+
                         ArrayList<MyCategories> mainCategory_list = new ArrayList<>();
                         for (int i = 0; i < resultArray.length(); i++) {
                             MyCategories categories = gson.fromJson(resultArray.getJSONObject(i).toString(), MyCategories.class);
