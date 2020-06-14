@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainAdapter extends BaseExpandableListAdapter {
+public class MenuAdapter extends BaseExpandableListAdapter {
 
 
     private Activity context;
@@ -29,7 +29,7 @@ public class MainAdapter extends BaseExpandableListAdapter {
     private ArrayList<MyCategories> originalList;
     private LayoutInflater inflater;
 
-    public MainAdapter(Activity context, ArrayList<MyCategories> continentList) {
+    public MenuAdapter(Activity context, ArrayList<MyCategories> continentList) {
         this.context = context;
         this.auctionsList = new ArrayList<MyCategories>();
         this.auctionsList.addAll(continentList);

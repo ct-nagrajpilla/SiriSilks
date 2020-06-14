@@ -1,0 +1,104 @@
+{
+  "status": 1,
+  "details": "Ok",
+  "newversion_notice": "3",
+  "short_link": "http:\/\/bit.ly\/36Zoy3L",
+  "list": {
+    "categories": [
+      {
+        "name": "Kanchipuram SILK SAREES",
+        "id": 1,
+        "subcategories": [
+          {
+            "id": "2",
+            "name": "kanchi meena butta"
+          }
+        ]
+      },
+      {
+        "name": "ART SILK SAREES",
+        "id": 3,
+        "subcategories": [
+
+        ]
+      },
+      {
+        "name": "ASSAM MUGA\/MOOGA SILLK SAREES",
+        "id": 4,
+        "subcategories": [
+
+        ]
+      },
+      {
+        "name": "ASSAM PAT\/PAAT SILK SAREES",
+        "id": 5,
+        "subcategories": [
+
+        ]
+      },
+      {
+        "name": "ASSAM ERI SILK SAREES",
+        "id": 6,
+        "subcategories": [
+
+        ]
+      },
+      {
+        "name": "BHAGALPURI TUSAR SILK SAREES",
+        "id": 7,
+        "subcategories": [
+
+        ]
+      },
+      {
+        "name": "Organza\/TISSUE Silk Saree",
+        "id": 8,
+        "subcategories": [
+
+        ]
+      },
+      {
+        "name": "Raw Silk Saree",
+        "id": 9,
+        "subcategories": [
+          {
+            "id": "12",
+            "name": "Dharmavaram Pattu Sarees"
+          }
+        ]
+      },
+      {
+        "name": "Tanchoi Silk Saree",
+        "id": 10,
+        "subcategories": [
+
+        ]
+      },
+      {
+        "name": "Cotton Silk Sarees",
+        "id": 11,
+        "subcategories": [
+
+        ]
+      },
+      {
+        "name": "Dharmavaram Silk Sarees",
+        "id": 13,
+        "subcategories": [
+          {
+            "id": "14",
+            "name": "Dupin Silk Sarees"
+          }
+        ]
+      }
+    ],
+    "quicklinks": [
+      "Cart",
+      "Privacy Policy",
+      "Terms & Conditions",
+      "About Us",
+      "Contact Us",
+      "Subscribe"
+    ]
+  }
+}

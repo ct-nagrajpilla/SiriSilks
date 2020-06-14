@@ -5,13 +5,8 @@ import java.util.List;
 
 
 public class MyCategories {
-
-
     private String name = "";
-
     int id = 0;
-
-
     private List<SubCategory> subCategory = new ArrayList<SubCategory>();
 
     public MyCategories(String name, int id, List<SubCategory> subCategory) {

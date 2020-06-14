@@ -15,7 +15,7 @@
     <color name="white">#FFFFFF</color>
     <color name="lithgt_white">#EEEEEE</color>
     <color name="black">#000000</color>
-
+    <color name="light_gray">#EAE6E6</color>
     <!--echo "# SiriSilks" >> README.md
 git init
 git add README.md

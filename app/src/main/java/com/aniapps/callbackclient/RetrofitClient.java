@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.aniapps.siri.BuildConfig;
 import com.aniapps.siri.MainActivity;
+import com.aniapps.utils.Pref;
 import com.aniapps.utils.ProgressDialog;
 import com.aniapps.siri.R;
 
@@ -91,7 +92,8 @@ public class RetrofitClient extends MainActivity {
         apiService = RetrofitClient.getClient(context).create(APIService.class);
         postParams.put("api_id", "checklist2019v1.0");
         postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
-        postParams.put("device_id", "abcdef");
+        postParams.put("device_id", Pref.getIn().getDeviceId());
+        postParams.put("app_code", Pref.getIn().getApp_code());
         apiService.getApiResult(context.getResources().getString(R.string.core_live), postParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {

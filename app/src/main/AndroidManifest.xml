@@ -16,7 +16,7 @@
         android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
@@ -35,6 +35,8 @@
                 android:resource="@xml/searchable" />
 
         </activity>
+        <activity android:name=".DetailsPage"/>
+        <activity android:name=".ZoomImageAct"/>
     </application>
 
 </manifest>

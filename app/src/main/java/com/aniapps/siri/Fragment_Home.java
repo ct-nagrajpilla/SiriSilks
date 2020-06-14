@@ -3,14 +3,13 @@ package com.aniapps.siri;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,16 +32,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.aniapps.models.Movie;
+import com.aniapps.models.MyAreas;
+import com.aniapps.models.NewArrivals;
+import com.aniapps.models.Products;
+import com.aniapps.models.Trending;
 import com.aniapps.utils.Image_Fetch;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,28 +53,26 @@ public class Fragment_Home extends Fragment {
     int page = 0;
 
     // url to fetch shopping items
-    private static final String URL = "https://api.androidhive.info/json/movies_2017.json";
     Integer[] imageId = {R.drawable.aaa, R.drawable.bbb, R.drawable.ccc};
-    private RecyclerView recyclerView, recyclerView1;
+    private RecyclerView recyclerView, recyclerView1, recyclerView2;
     private ViewPager imgViewPager;
-    private List<Movie> itemsList;
     private MainCatAdapter mAdapter;
-    private ProdcutsAdapter pAdapter;
+    private NewArraivalsAdapter pAdapter1;
+    private TrendingAdapter pAdapter2;
+    private ArrayList<MyAreas> areas = new ArrayList<>();
+    private ArrayList<Products> newArrivals = new ArrayList<>();
+    private ArrayList<Products> trendings = new ArrayList<>();
+
     Context context;
     LinearLayout dot_layout;
 
-    public Fragment_Home(Context context) {
+    public Fragment_Home(Context context, ArrayList<MyAreas> areas, ArrayList<Products> newArrivals, ArrayList<Products> trendings) {
         this.context = context;
-        // Required empty public constructor
+        this.areas = areas;
+        this.newArrivals = newArrivals;
+        this.trendings = trendings;
     }
 
-   /* public static Fragment_Home newInstance(String param1, String param2) {
-        Fragment_Home fragment = new Fragment_Home(context);
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,26 +85,27 @@ public class Fragment_Home extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_store, container, false);
-
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView1 = view.findViewById(R.id.recycler_view1);
-        itemsList = new ArrayList<>();
-        mAdapter = new MainCatAdapter(getActivity(), itemsList);
-        pAdapter = new ProdcutsAdapter();
+        recyclerView2 = view.findViewById(R.id.recycler_view2);
+        mAdapter = new MainCatAdapter(getActivity(), areas);
+        pAdapter1 = new NewArraivalsAdapter(newArrivals);
+         pAdapter2 = new TrendingAdapter(trendings);
         imgViewPager = (ViewPager) view.findViewById(R.id.img_viewpager);
         dot_layout = (LinearLayout) view.findViewById(R.id.dot_layout);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView1.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        //RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
-        //recyclerView.setLayoutManager(mLayoutManager);
-        // recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(8), true));
+        recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView1.setItemAnimator(new DefaultItemAnimator());
+        recyclerView2.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
-        recyclerView1.setAdapter(pAdapter);
+        recyclerView1.setAdapter(pAdapter1);
+         recyclerView2.setAdapter(pAdapter2);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView1.setNestedScrollingEnabled(false);
+        recyclerView2.setNestedScrollingEnabled(false);
 
         imgViewPager.getLayoutParams().height = (int) ((float) ((getActivity()
                 .getResources().getDisplayMetrics().widthPixels)) / 1.77);
@@ -167,55 +164,11 @@ public class Fragment_Home extends Fragment {
 
             }
         });
-        fetchStoreItems();
 
         return view;
     }
 
-    /**
-     * fetching shopping item by making http call
-     */
-    private void fetchStoreItems() {
-        JsonArrayRequest request = new JsonArrayRequest(URL,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        if (response == null) {
-                            Toast.makeText(getActivity(), "Couldn't fetch the store items! Pleas try again.", Toast.LENGTH_LONG).show();
-                            return;
-                        }
 
-                        List<Movie> items = new Gson().fromJson(response.toString(), new TypeToken<List<Movie>>() {
-                        }.getType());
-
-                        itemsList.clear();
-                        itemsList.addAll(items);
-
-                        // refreshing recycler view
-                        mAdapter.notifyDataSetChanged();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                // error in getting json
-                Log.e(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getActivity(), "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        SiriApp.getInstance().addToRequestQueue(request);
-    }
-
-
-    /*  final Runnable mUpdateResults = new Runnable() {
-          public void run() {
-              int numPages = imgViewPager.getAdapter().getCount();
-              page = (page + 1) % numPages;
-              imgViewPager.setCurrentItem(page);
-
-          }
-      };
-      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void addimage(int pos, int size, LinearLayout dot_layout) {
         dot_layout.removeAllViews();
@@ -357,7 +310,7 @@ public class Fragment_Home extends Fragment {
      */
     class MainCatAdapter extends RecyclerView.Adapter<MainCatAdapter.MyViewHolder> {
         private Context context;
-        private List<Movie> movieList;
+        private List<MyAreas> myAreas;
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             public TextView name;
@@ -374,9 +327,9 @@ public class Fragment_Home extends Fragment {
         }
 
 
-        public MainCatAdapter(Context context, List<Movie> movieList) {
+        public MainCatAdapter(Context context, List<MyAreas> myAreas) {
             this.context = context;
-            this.movieList = movieList;
+            this.myAreas = myAreas;
         }
 
         @Override
@@ -388,252 +341,188 @@ public class Fragment_Home extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(MyViewHolder holder, final int position) {
-            final Movie movie = movieList.get(position);
-            if (position == 0) {
-                holder.name.setText("New Arrivals");
-                holder.name.setTextColor(Color.parseColor("#FFFFFF"));
-                holder.lay_categories.setBackgroundResource(R.drawable.border_view_red);
-            } else {
-                holder.lay_categories.setBackgroundResource(R.drawable.border_view);
+        public void onBindViewHolder(final MyViewHolder holder, final int position) {
+            final MyAreas areas = myAreas.get(position);
+            holder.name.setText(areas.getName());
 
-            }
-            //  holder.name.setText(movie.getTitle());
+            holder.lay_categories.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getActivity(), DetailsPage.class);
+                    startActivity(i);
+                    Toast.makeText(context, "clicked on item" + areas.getName(), Toast.LENGTH_SHORT).show();
+                }
+            });
 
-
-          /*  Glide.with(context)
-                    .load(movie.getImage())
-                    .into(holder.thumbnail);*/
         }
 
         @Override
         public int getItemCount() {
-            return movieList.size();
+            return myAreas.size();
         }
     }
 
-    class ProdcutsAdapter extends RecyclerView.Adapter<ProdcutsAdapter.ViewHolder> {
+    class NewArraivalsAdapter extends RecyclerView.Adapter<NewArraivalsAdapter.ViewHolder> {
+
+        ArrayList<Products> newArrivals;
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public TextView name, price_orginal, price_offer;
+            public CardView cardView;
+            AppCompatImageView thumbnail;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 name = itemView.findViewById(R.id.title);
                 price_orginal = itemView.findViewById(R.id.orinal_price);
                 price_offer = itemView.findViewById(R.id.offer_price);
+                cardView = itemView.findViewById(R.id.myCard);
+                thumbnail = itemView.findViewById(R.id.thumbnail);
 
             }
         }
 
+        NewArraivalsAdapter(ArrayList<Products> newArrivals) {
+            this.newArrivals = newArrivals;
+        }
+
         @NonNull
         @Override
-        public ProdcutsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public NewArraivalsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.products, parent, false);
+                    .inflate(R.layout.home_products, parent, false);
 
             return new ViewHolder(itemView);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ProdcutsAdapter.ViewHolder holder, int position) {
-            holder.price_orginal.setPaintFlags(holder.price_orginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        public void onBindViewHolder(@NonNull NewArraivalsAdapter.ViewHolder holder, int position) {
+            Products products = newArrivals.get(position);
+            SetData(holder, products);
+
         }
 
         @Override
         public int getItemCount() {
-            return 5;
+            return newArrivals.size();
         }
 
 
     }
 
-    class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHolder> {
-        private Context context;
-        private List<Movie> movieList;
 
-        public class MyViewHolder extends RecyclerView.ViewHolder {
+    class TrendingAdapter extends RecyclerView.Adapter<TrendingAdapter.ViewHolder> {
+
+        ArrayList<Products> trendings;
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
             public TextView name, price_orginal, price_offer;
-
-            public ImageView thumbnail;
-
-            public MyViewHolder(View view) {
-                super(view);
-                name = view.findViewById(R.id.title);
-                //price_orginal = view.findViewById(R.id.orinal_price);
-                //price_offer = view.findViewById(R.id.offer_price);
+            public CardView cardView;
+            AppCompatImageView thumbnail;
 
 
-                thumbnail = view.findViewById(R.id.thumbnail);
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+                name = itemView.findViewById(R.id.title);
+                price_orginal = itemView.findViewById(R.id.orinal_price);
+                price_offer = itemView.findViewById(R.id.offer_price);
+                cardView = itemView.findViewById(R.id.myCard);
+                thumbnail = itemView.findViewById(R.id.thumbnail);
+
             }
         }
 
-
-        public ProductAdapter(Context context, List<Movie> movieList) {
-            this.context = context;
-            this.movieList = movieList;
+        TrendingAdapter(ArrayList<Products> trendings) {
+            this.trendings = trendings;
         }
 
+        @NonNull
         @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public TrendingAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.store_item_row, parent, false);
+                    .inflate(R.layout.home_products, parent, false);
 
-            return new MyViewHolder(itemView);
+            return new ViewHolder(itemView);
         }
 
         @Override
-        public void onBindViewHolder(MyViewHolder holder, final int position) {
-            final Movie movie = movieList.get(position);
-            holder.name.setText(movie.getTitle());
-            // holder.price_orginal.setPaintFlags(holder.price_orginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        public void onBindViewHolder(@NonNull TrendingAdapter.ViewHolder holder, int position) {
+            Products products = trendings.get(position);
+            SetData2(holder, products);
 
-
-          /*  Glide.with(context)
-                    .load(movie.getImage())
-                    .into(holder.thumbnail);*/
         }
 
         @Override
         public int getItemCount() {
-            return movieList.size();
+            return trendings.size();
         }
+
+
     }
 
-
-   /* EditText searchEditText;
-    FrameLayout menuView;
-    private Menu menu;
-    AppCompatImageView clear;
-    MenuItem menuItem;
-
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        this.menu = menu;
-        // MenuInflater menuInflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
-        menuItem = menu.findItem(R.id.action_search);
-        menuItem.setVisible(true);
-        menuItem.setEnabled(true);
-        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                *//*Intent in=new Intent(MainActivity.this,SearchList.class);
-                startActivity(in);*//*
-                return false;
-            }
-        });
-        searchEditText = (EditText) MenuItemCompat.getActionView(menuItem).findViewById(R.id.edittext);
-        menuView = (FrameLayout) MenuItemCompat.getActionView(menuItem).findViewById(R.id.menu_view);
-        clear = (AppCompatImageView) MenuItemCompat.getActionView(menuItem).findViewById(R.id.clear);
-        clear.setOnClickListener(new View.OnClickListener() {
+    public void SetData(NewArraivalsAdapter.ViewHolder holder, Products products) {
+        holder.name.setText(products.getProduct_name());
+        holder.price_offer.setText(rupeeFormat(products.getProduct_price()));
+        try {
+            Glide.with(getActivity())
+                    .load(products.getProduct_image())
+                    .placeholder(R.drawable.no_image_gallery)
+                    .fitCenter()
+                    .into(holder.thumbnail);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+       // holder.price_orginal.setPaintFlags(holder.price_orginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               *//* if (null != mHighlightArrayAdapter)
-                    mHighlightArrayAdapter.getFilter().filter("");
-                searchEditText.setText("");
-                search_list.setVisibility(View.GONE);*//*
-                //hideKeyboard();
-                MenuItemCompat.collapseActionView(menuItem);
-
+                Intent i = new Intent(getActivity(), DetailsPage.class);
+                startActivity(i);
             }
         });
-
-        searchEditText.addTextChangedListener(new TextWatcher() {
+        holder.thumbnail.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() != 0) {
-                    searchEditText.setCompoundDrawables(null, null, null, null);
-                    *//*if (null != mHighlightArrayAdapter)
-                        mHighlightArrayAdapter.getFilter().filter(s);*//*
-                    clear.setVisibility(View.VISIBLE);
-                } else {
-                    searchEditText.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.icon_search_edit, 0, 0, 0);
-                    *//*if (null != mHighlightArrayAdapter)
-                        mHighlightArrayAdapter.getFilter().filter("");*//*
-                    clear.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), DetailsPage.class);
+                startActivity(i);
             }
         });
-
-
-        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem menuItem) {
-                searchEditText.requestFocus();
-                if (searchEditText.requestFocus()) {
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if (null != imm)
-                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                    *//*if (null != search_list) {
-                        search_list.setVisibility(View.VISIBLE);
-                    }*//*
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
-                try {
-                    if (searchEditText.hasFocus()) {
-                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
-                    }
-                    *//*if (null != mHighlightArrayAdapter)
-                        mHighlightArrayAdapter.getFilter().filter("");*//*
-                    searchEditText.setText("");
-
-                   *//* if (serach_flag) {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                spage = 1;
-                                GetAuctionsData("", "", "Menu");
-
-                            }
-                        }, 300);
-                    }
-                    search_list.setVisibility(View.GONE);
-*//*
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                return true;
-            }
-
-        });
-
-
     }
-*/
 
-   /* @Override
-    public void onPrepareOptionsMenu(Menu menu,MenuInflater menuInflater) {
-    *//*    if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            menu.getItem(0).setEnabled(false);
-        } else {
-            menu.getItem(0).setEnabled(true);
-        }*//*
-        return super.onPrepareOptionsMenu(menu,menuInflater);
-
+    public void SetData2(TrendingAdapter.ViewHolder holder, Products products) {
+        holder.name.setText(products.getProduct_name());
+        holder.price_orginal.setPaintFlags(holder.price_orginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), DetailsPage.class);
+                startActivity(i);
+            }
+        });
+        holder.thumbnail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), DetailsPage.class);
+                startActivity(i);
+            }
+        });
     }
-*/
 
-  /*  @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main, menu);
-        super.onCreateOptionsMenu(menu,inflater);
-    }*/
 
+    public static String rupeeFormat(String value) {
+        value = value.replace(",", "").replace("₹ ", "").replace("₹", "");
+        char lastDigit = value.charAt(value.length() - 1);
+        String result = "";
+        int len = value.length() - 1;
+        int nDigits = 0;
+
+        for (int i = len - 1; i >= 0; i--) {
+            result = value.charAt(i) + result;
+            nDigits++;
+            if (((nDigits % 2) == 0) && (i > 0)) {
+                result = "," + result;
+            }
+        }
+        return ("₹ " + result + lastDigit);
+    }
 }

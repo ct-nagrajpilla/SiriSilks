@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/header_layout"
+        layout="@layout/header" />
+
+    <FrameLayout
+        android:id="@+id/fl_car"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpagers"
+            android:layout_width="match_parent"
+            android:layout_height="200sp"
+            android:transitionName="car_image"
+            android:visibility="visible" />
+
+
+        <com.aniapps.utils.ScrollingPagerIndicator
+            android:id="@+id/pagerIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="5sp"
+            app:spi_dotColor="@color/colorPrimary"
+            app:spi_dotSelectedColor="@color/colorPrimaryDark" />
+
+        <LinearLayout
+            android:id="@+id/llFollowed"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="10sp"
+            android:layout_marginBottom="10sp"
+            android:background="@mipmap/cirvle_shadow"
+            android:gravity="center"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivDeepSharing"
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:src="@mipmap/fav_done2"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_fav"
+                android:layout_width="20sp"
+                android:visibility="gone"
+                android:layout_height="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llWinning"
+            android:layout_width="42sp"
+            android:layout_height="42sp"
+            android:layout_gravity="top|right"
+            android:layout_marginTop="10sp"
+            android:layout_marginRight="10sp"
+            android:background="@mipmap/cirvle_shadow"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivWinning"
+                android:layout_width="24sp"
+                android:layout_height="24sp"
+                android:src="@mipmap/icon_cart" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+
+
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <WebView
+            android:id="@+id/web_details"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_details_checkout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_details_checkout"
+            style="@style/tv_button"
+            android:layout_margin="0dp"
+            android:layout_width="match_parent"
+            android:text="CHECK OUT"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>

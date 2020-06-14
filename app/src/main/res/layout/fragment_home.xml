@@ -36,6 +36,7 @@
                 android:orientation="horizontal" />
         </FrameLayout>
 
+
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,14 +54,15 @@
             android:background="#E9E7E8"
             android:clipToPadding="false"
             android:padding="8sp"
-            android:scrollbars="vertical" />
+            android:scrollbars="none" />
+
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
             android:layout_margin="2sp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -86,8 +88,6 @@
                 android:text="View More"
                 android:textColor="@color/colorPrimary"
                 android:textSize="12dp" />
-
-
         </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -97,6 +97,44 @@
             android:clipToPadding="false"
             android:scrollbars="vertical" />
 
-    </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="2sp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="left"
+                android:padding="5sp"
+                android:text="Trending"
+                android:textAllCaps="true"
+                android:textColor="#111"
+                android:textSize="16dp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="end"
+                android:background="@drawable/border_viewmore"
+                android:gravity="end"
+                android:padding="4sp"
+                android:text="View More"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12dp" />
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:scrollbars="vertical" />
+    </LinearLayout>
 </androidx.core.widget.NestedScrollView>

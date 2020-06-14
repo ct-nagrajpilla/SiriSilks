@@ -19,7 +19,7 @@ public class SiriApp extends Application {
 
     private RequestQueue mRequestQueue;
 
-    private static SiriApp mInstance;
+    public static SiriApp mInstance;
 
     @Override
     public void onCreate() {

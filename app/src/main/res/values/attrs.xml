@@ -7,5 +7,33 @@
         <attr name="civ_fill_color" format="color" />
         <attr name="civ_circle_background_color" format="color" />
     </declare-styleable>
+    <declare-styleable name="ScrollingPagerIndicator">
+        <attr name="spi_dotColor" format="color" />
+        <attr name="spi_dotSelectedColor" format="color" />
+        <attr name="spi_dotSize" format="dimension" />
+        <attr name="spi_dotSelectedSize" format="dimension" />
+        <attr name="spi_dotSpacing" format="dimension" />
+        <attr name="spi_visibleDotCount" format="integer" />
+        <attr name="spi_visibleDotThreshold" format="integer" />
+        <attr name="spi_looped" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="DiscreteScrollView">
+        <attr name="dsv_orientation" format="enum">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+    </declare-styleable>
 
+    <declare-styleable name="NumberPicker">
+        <attr name="min" format="integer"/>
+        <attr name="max" format="integer"/>
+        <attr name="value" format="integer"/>
+        <attr name="unit" format="integer" />
+        <attr name="custom_layout" format="reference" />
+        <attr name="focusable" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="Themes">
+        <attr name="NumberPickerLayout" format="reference"/>
+    </declare-styleable>
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:numberpicker="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,14 +9,14 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_margin="8sp"
         app:cardElevation="6dp">
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:baselineAligned="false"
             android:orientation="horizontal"
             android:padding="3dp">
@@ -38,16 +39,15 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/img_camara_cnt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/img_fav"
+                    android:layout_width="24sp"
+                    android:layout_height="24sp"
                     android:layout_gravity="right"
                     android:layout_marginEnd="6dp"
                     android:layout_marginRight="6dp"
                     android:layout_marginBottom="6dp"
-                    android:drawableLeft="@mipmap/fav_done"
-                    android:drawablePadding="3dp"
+                    android:background="@mipmap/fav_done"
                     android:gravity="center_vertical"
                     android:text="0"
                     android:textColor="#FFFFFF"
@@ -60,76 +60,74 @@
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_amount">
+                android:orientation="vertical">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_current_bid"
+                    android:id="@+id/tv_title"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
                     android:text="Light blue wovern banarasi sareen with blouse.."
-                    android:textColor="@color/colorPrimary"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textColor="@color/colorPrimary" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_year"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:gravity="right"
+                    android:text="by Siri Sarees" />
 
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_amount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:layout_margin="8sp"
+                    android:layout_margin="5sp"
                     android:text="₹ 33,000 "
                     android:textColor="@color/black"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_current_bid" />
+                    android:textSize="18sp" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_year"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="by Siri Sarees"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_current_bid" />
 
-                <androidx.appcompat.widget.AppCompatSpinner
-                    android:id="@+id/sp_quantity"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="by Siri Sarees"
-                    android:tooltipText="@string/orders"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_current_bid" />
-
+                <com.aniapps.utils.quatity.NumberPicker
+                    android:id="@+id/number_picker_custom"
+                    android:layout_width="match_parent"
+                    android:layout_height="32sp"
+                    android:layout_margin="5sp"
+                    android:gravity="center_vertical|center"
+                    numberpicker:custom_layout="@layout/number_picker_layout"
+                    numberpicker:max="10"
+                    numberpicker:min="0"
+                    numberpicker:unit="1"
+                    numberpicker:value="-5" />
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center"
+                    android:layout_margin="8sp"
                     android:gravity="center|bottom"
                     android:text="IN STOCK! HURRY"
+                    android:visibility="visible"
                     android:textColor="@color/green" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/bt_add"
+                    style="@style/tv_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:layout_gravity="bottom|center"
+                    android:textAllCaps="true"
+                    android:layout_margin="8sp"
+                    android:gravity="center|bottom"
+                    android:text="IN STOCK! HURRY"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
 

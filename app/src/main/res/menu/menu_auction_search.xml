@@ -8,7 +8,15 @@
         android:title="@string/action_search"
         app:actionLayout="@layout/layout_auctions_search"
         app:showAsAction="always|collapseActionView" />
+
     <item
+        android:id="@+id/action_cart"
+        android:icon="@mipmap/icon_cart"
+        android:title="Done"
+        android:visible="false"
+        app:actionLayout="@layout/countlayout"
+        app:showAsAction="always" />
+  <!--  <item
         android:id="@+id/action_cart"
         android:icon="@mipmap/icon_cart"
         android:iconTintMode="add"
@@ -16,5 +24,5 @@
         android:visible="true"
         android:iconTint="@color/black"
         app:showAsAction="always|collapseActionView" />
-
+-->
 </menu>
