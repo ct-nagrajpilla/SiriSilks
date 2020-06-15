@@ -4,21 +4,26 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.aniapps.adapters.SliderImageAdapter;
@@ -27,6 +32,7 @@ import com.aniapps.callbackclient.RetrofitClient;
 import com.aniapps.models.Product;
 import com.aniapps.utils.ProgressDialog;
 import com.aniapps.utils.ScrollingPagerIndicator;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -34,6 +40,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DetailsPage extends AppCompatActivity {
     ViewPager viewPager;
@@ -44,7 +51,9 @@ public class DetailsPage extends AppCompatActivity {
     String auction_id = "", auction_event_id = "";
     ArrayList<String> arlImageList = new ArrayList<>();
     String from_screen;
-
+    LinearLayoutManager HorizontalLayout;
+    RecyclerView recycler_horizontal;
+    HorizontalAdapter horizontalAdapter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,16 +69,22 @@ public class DetailsPage extends AppCompatActivity {
         myWebView = findViewById(R.id.web_details);
         btn_bidnow = findViewById(R.id.btn_details_checkout);
         viewPager = (ViewPager) findViewById(R.id.viewpagers);
+        recycler_horizontal = (RecyclerView) findViewById(R.id.recycler_horizontal);
+        // Set Horizontal Layout Manager
+        // for Recycler view
+        HorizontalLayout = new LinearLayoutManager(DetailsPage.this, LinearLayoutManager.HORIZONTAL, false);
+        recycler_horizontal.setLayoutManager(HorizontalLayout);
+
         pagerIndicator = (ScrollingPagerIndicator) findViewById(R.id.pagerIndicator);
 
         ic_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    finish();
+                finish();
             }
         });
 
-      //  GetLCAuctionsData();
+        //  GetLCAuctionsData();
 
         myProduct();
 
@@ -192,10 +207,16 @@ public class DetailsPage extends AppCompatActivity {
         product.setProduct_id("123");
         product.setProduct_name("Cotton Silk Traditional Saree");
         product.setProduct_details("https://testlb.cartradeexchange.com//mob//auctionlivesingle//oKqYwR1HP7Ce8D5jfgY6lkD19biW1HjIJLjE4OlFvdk//cteappv");
+
+
         setLCImages(product);
+
+
+
+        horizontalAdapter = new HorizontalAdapter(product.getProduct_all_images());
+        recycler_horizontal.setAdapter(horizontalAdapter);
+
     }
-
-
 
 
     public void GetLCAuctionsData() {
@@ -248,6 +269,7 @@ public class DetailsPage extends AppCompatActivity {
         }
         return false;
     }
+
     public void apiStatusRes(Context ctx, int status, JSONObject job) {
         if (status == 3) {
             String exceptionTitle = "", exceptionMessage = "";
@@ -290,6 +312,7 @@ public class DetailsPage extends AppCompatActivity {
         }
 
     }
+
     public void alertMessage(Context context, String title, String msg) {
         final Dialog myDialog = new Dialog(context, R.style.ThemeDialogCustom);
         myDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -306,4 +329,49 @@ public class DetailsPage extends AppCompatActivity {
         });
         myDialog.show();
     }
+    private class HorizontalAdapter extends RecyclerView.Adapter<CasesHolder> {
+        ArrayList<String> imagesList;
+
+        private HorizontalAdapter(ArrayList<String> data) {
+            super();
+            this.imagesList = data;
+        }
+
+        @Override
+        public CasesHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new CasesHolder(getLayoutInflater().inflate(R.layout.layout_horizontal, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(final CasesHolder holder, int position) {
+
+            try {
+                Glide.with(DetailsPage.this).load(imagesList.get(position)).placeholder(R.mipmap.fav_none2).centerCrop().into(holder.imgDisplay);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return imagesList.size();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+    }
+
+    private class CasesHolder extends RecyclerView.ViewHolder {
+        ImageView imgDisplay;
+
+        public CasesHolder(View convertView) {
+            super(convertView);
+            imgDisplay = (ImageView) convertView
+                    .findViewById(R.id.imgDisplay);
+
+        }
+    }
+
 }
