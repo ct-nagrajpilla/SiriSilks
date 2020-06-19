@@ -19,14 +19,28 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/thumbnail"
-                android:layout_width="match_parent"
-                android:layout_height="200sp"
-                android:scaleType="fitCenter"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:src="@mipmap/xyzzzzz" />
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/thumbnail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="200sp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/xyzzzzz" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/product_fav"
+                    android:layout_width="22sp"
+                    android:layout_height="22sp"
+                    android:layout_margin="5sp"
+                    android:layout_gravity="right"
+                    android:gravity="center_vertical"
+                    android:padding="8sp"
+                    android:background="@mipmap/fav_none2" />
+            </FrameLayout>
 
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -34,9 +48,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center_vertical"
+                android:layout_margin="5sp"
                 android:ellipsize="end"
                 android:fontFamily="@font/cera_gr_regular"
-                android:gravity="center"
                 android:singleLine="true"
                 android:text="Product Name..." />
 
@@ -44,11 +58,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center_vertical"
-                android:layout_marginEnd="5sp"
+                android:layout_margin="5sp"
                 android:gravity="end"
                 android:orientation="horizontal">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/orinal_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -56,8 +70,8 @@
                     android:text="\u20B9 3500"
                     android:textColor="@color/darkgray"
                     android:textSize="12sp"
-                    android:visibility="gone"
-                    android:textStyle="italic" />
+                    android:textStyle="italic"
+                    android:visibility="gone" />
 
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -68,10 +82,20 @@
                     android:fontFamily="@font/cera_gr_medium"
                     android:singleLine="true"
                     android:text="\u20B9 2000"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="12sp" />
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
 
             </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_addcart"
+                style="@style/tv_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:text="ADD TO CART"
+                android:foreground="?attr/selectableItemBackground"
+                android:textColor="@color/white" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

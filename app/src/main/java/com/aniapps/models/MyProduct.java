@@ -1,8 +1,8 @@
 package com.aniapps.models;
 
-public class Products {
+public class MyProduct {
     String product_name="", product_id="",product_price="",product_quantity="",product_company="",
-            product_msg="",show_button="",product_image="",product_img_count="",product_fav="";
+            product_msg="",show_button="",product_image="",product_img_count="",wishlist="",addtocart="";
 
     public String getProduct_name() {
         return product_name;
@@ -68,12 +68,20 @@ public class Products {
         this.product_img_count = product_img_count;
     }
 
-    public String getProduct_fav() {
-        return product_fav;
+    public String getWishlist() {
+        return wishlist;
     }
 
-    public void setProduct_fav(String product_fav) {
-        this.product_fav = product_fav;
+    public void setWishlist(String wishlist) {
+        this.wishlist = wishlist;
+    }
+
+    public String getAddtocart() {
+        return addtocart;
+    }
+
+    public void setAddtocart(String addtocart) {
+        this.addtocart = addtocart;
     }
 
     public String getProduct_company() {

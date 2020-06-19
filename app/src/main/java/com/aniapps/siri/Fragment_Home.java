@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +13,8 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -32,19 +34,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.aniapps.callbackclient.APIResponse;
+import com.aniapps.callbackclient.RetrofitClient;
 import com.aniapps.models.MyAreas;
-import com.aniapps.models.NewArrivals;
-import com.aniapps.models.Products;
-import com.aniapps.models.Trending;
+import com.aniapps.models.MyProduct;
 import com.aniapps.utils.Image_Fetch;
+import com.aniapps.utils.Pref;
+import com.aniapps.utils.ScrollingPagerIndicator;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
-import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.aniapps.siri.MainActivity.bottomNavigationView;
+import static com.aniapps.siri.MainActivity.refreshMenu;
+import static com.aniapps.siri.MainActivity.showBadge;
 
 
 public class Fragment_Home extends Fragment {
@@ -57,16 +68,17 @@ public class Fragment_Home extends Fragment {
     private RecyclerView recyclerView, recyclerView1, recyclerView2;
     private ViewPager imgViewPager;
     private MainCatAdapter mAdapter;
-    private NewArraivalsAdapter pAdapter1;
-    private TrendingAdapter pAdapter2;
+    private NewArraivalsAdapter pAdapter1, pAdapter2;
     private ArrayList<MyAreas> areas = new ArrayList<>();
-    private ArrayList<Products> newArrivals = new ArrayList<>();
-    private ArrayList<Products> trendings = new ArrayList<>();
+    private ArrayList<MyProduct> newArrivals = new ArrayList<>();
+    private ArrayList<MyProduct> trendings = new ArrayList<>();
+    private AppCompatTextView tv_tn_viewmore, tv_na_viewmore;
 
     Context context;
-    LinearLayout dot_layout;
+    // LinearLayout dot_layout;
+    ScrollingPagerIndicator pagerIndicator;
 
-    public Fragment_Home(Context context, ArrayList<MyAreas> areas, ArrayList<Products> newArrivals, ArrayList<Products> trendings) {
+    public Fragment_Home(Context context, ArrayList<MyAreas> areas, ArrayList<MyProduct> newArrivals, ArrayList<MyProduct> trendings) {
         this.context = context;
         this.areas = areas;
         this.newArrivals = newArrivals;
@@ -86,14 +98,17 @@ public class Fragment_Home extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        tv_na_viewmore = view.findViewById(R.id.tv_na_viewmore);
+        tv_tn_viewmore = view.findViewById(R.id.tv_tn_viewmore);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView1 = view.findViewById(R.id.recycler_view1);
         recyclerView2 = view.findViewById(R.id.recycler_view2);
         mAdapter = new MainCatAdapter(getActivity(), areas);
-        pAdapter1 = new NewArraivalsAdapter(newArrivals);
-         pAdapter2 = new TrendingAdapter(trendings);
+        pAdapter1 = new NewArraivalsAdapter(newArrivals, "1");
+        pAdapter2 = new NewArraivalsAdapter(trendings, "2");
         imgViewPager = (ViewPager) view.findViewById(R.id.img_viewpager);
-        dot_layout = (LinearLayout) view.findViewById(R.id.dot_layout);
+        pagerIndicator = (ScrollingPagerIndicator) view.findViewById(R.id.pagerIndicator);
+        // dot_layout = (LinearLayout) view.findViewById(R.id.dot_layout);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView1.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -102,7 +117,7 @@ public class Fragment_Home extends Fragment {
         recyclerView2.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
         recyclerView1.setAdapter(pAdapter1);
-         recyclerView2.setAdapter(pAdapter2);
+        recyclerView2.setAdapter(pAdapter2);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView1.setNestedScrollingEnabled(false);
         recyclerView2.setNestedScrollingEnabled(false);
@@ -112,16 +127,30 @@ public class Fragment_Home extends Fragment {
         imgViewPager.setOffscreenPageLimit(0);
         imgViewPager.setAdapter(new ImageSlidePagerAdapter(
                 getActivity()));
+        pagerIndicator.attachToPager(imgViewPager);
 
-        if (imageId.length > 1) {
-            dot_layout.setVisibility(View.VISIBLE);
-            imgViewPager.setCurrentItem(0);
-            addimage(0, imageId.length, dot_layout);
-        } else {
-            dot_layout.setVisibility(View.GONE);
-            addimage(0, 0, dot_layout);
-        }
-
+        tv_na_viewmore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(context, ListingPage.class);
+                in.putExtra("area_id", "" + "1");
+                in.putExtra("area_name", "New Arrivals");
+                in.putExtra("category_id", "");
+                in.putExtra("category_name", "");
+                startActivity(in);
+            }
+        });
+        tv_tn_viewmore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(context, ListingPage.class);
+                in.putExtra("area_id", "" + "2");
+                in.putExtra("area_name", "Trending");
+                in.putExtra("category_id", "");
+                in.putExtra("category_name", "");
+                startActivity(in);
+            }
+        });
         final Handler mHandler = new Handler();
         final Runnable mUpdateResults = new Runnable() {
             public void run() {
@@ -156,7 +185,7 @@ public class Fragment_Home extends Fragment {
 
             @Override
             public void onPageSelected(int pos) {
-                addimage(pos, imageId.length, dot_layout);
+                //  addimage(pos, imageId.length, dot_layout);
             }
 
             @Override
@@ -321,7 +350,6 @@ public class Fragment_Home extends Fragment {
                 super(view);
                 name = view.findViewById(R.id.tv_category);
                 lay_categories = view.findViewById(R.id.lay_categories);
-
                 thumbnail = view.findViewById(R.id.img_category);
             }
         }
@@ -348,9 +376,12 @@ public class Fragment_Home extends Fragment {
             holder.lay_categories.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(getActivity(), DetailsPage.class);
+                    Intent i = new Intent(getActivity(), ListingPage.class);
+                    i.putExtra("area_id", areas.getId());
+                    i.putExtra("area_name", areas.getName());
+                    i.putExtra("category_id", "");
+                    i.putExtra("category_name", "");
                     startActivity(i);
-                    Toast.makeText(context, "clicked on item" + areas.getName(), Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -364,26 +395,30 @@ public class Fragment_Home extends Fragment {
 
     class NewArraivalsAdapter extends RecyclerView.Adapter<NewArraivalsAdapter.ViewHolder> {
 
-        ArrayList<Products> newArrivals;
+        ArrayList<MyProduct> newArrivals;
+        String from = "";
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            public TextView name, price_orginal, price_offer;
+            public AppCompatTextView name, price_offer, tv_addcart;
+
             public CardView cardView;
-            AppCompatImageView thumbnail;
+            AppCompatImageView thumbnail, product_fav;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 name = itemView.findViewById(R.id.title);
-                price_orginal = itemView.findViewById(R.id.orinal_price);
                 price_offer = itemView.findViewById(R.id.offer_price);
+                product_fav = itemView.findViewById(R.id.product_fav);
+                tv_addcart = itemView.findViewById(R.id.tv_addcart);
                 cardView = itemView.findViewById(R.id.myCard);
                 thumbnail = itemView.findViewById(R.id.thumbnail);
 
             }
         }
 
-        NewArraivalsAdapter(ArrayList<Products> newArrivals) {
+        NewArraivalsAdapter(ArrayList<MyProduct> newArrivals, String from) {
             this.newArrivals = newArrivals;
+            this.from = from;
         }
 
         @NonNull
@@ -397,8 +432,8 @@ public class Fragment_Home extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull NewArraivalsAdapter.ViewHolder holder, int position) {
-            Products products = newArrivals.get(position);
-            SetData(holder, products);
+            MyProduct products = newArrivals.get(position);
+            SetData(holder, products, from);
 
         }
 
@@ -411,58 +446,22 @@ public class Fragment_Home extends Fragment {
     }
 
 
-    class TrendingAdapter extends RecyclerView.Adapter<TrendingAdapter.ViewHolder> {
-
-        ArrayList<Products> trendings;
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            public TextView name, price_orginal, price_offer;
-            public CardView cardView;
-            AppCompatImageView thumbnail;
-
-
-            public ViewHolder(@NonNull View itemView) {
-                super(itemView);
-                name = itemView.findViewById(R.id.title);
-                price_orginal = itemView.findViewById(R.id.orinal_price);
-                price_offer = itemView.findViewById(R.id.offer_price);
-                cardView = itemView.findViewById(R.id.myCard);
-                thumbnail = itemView.findViewById(R.id.thumbnail);
-
-            }
-        }
-
-        TrendingAdapter(ArrayList<Products> trendings) {
-            this.trendings = trendings;
-        }
-
-        @NonNull
-        @Override
-        public TrendingAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.home_products, parent, false);
-
-            return new ViewHolder(itemView);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull TrendingAdapter.ViewHolder holder, int position) {
-            Products products = trendings.get(position);
-            SetData2(holder, products);
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return trendings.size();
-        }
-
-
-    }
-
-    public void SetData(NewArraivalsAdapter.ViewHolder holder, Products products) {
+    public void SetData(final NewArraivalsAdapter.ViewHolder holder, final MyProduct products, final String from) {
         holder.name.setText(products.getProduct_name());
         holder.price_offer.setText(rupeeFormat(products.getProduct_price()));
+
+
+        if (products.getWishlist().equals("y")) {
+            holder.product_fav.setBackgroundDrawable(getResources().getDrawable(R.mipmap.fav_done2));
+        } else {
+            holder.product_fav.setBackgroundDrawable(getResources().getDrawable(R.mipmap.fav_none2));
+        }
+
+        if (products.getAddtocart().equals("y")) {
+            holder.tv_addcart.setText("REMOVE CART");
+        } else {
+            holder.tv_addcart.setText("ADD TO CART");
+        }
         try {
             Glide.with(getActivity())
                     .load(products.getProduct_image())
@@ -472,7 +471,7 @@ public class Fragment_Home extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-       // holder.price_orginal.setPaintFlags(holder.price_orginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        // holder.price_orginal.setPaintFlags(holder.price_orginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -480,30 +479,34 @@ public class Fragment_Home extends Fragment {
                 startActivity(i);
             }
         });
-        holder.thumbnail.setOnClickListener(new View.OnClickListener() {
+        holder.product_fav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), DetailsPage.class);
-                startActivity(i);
+                if (!Pref.getIn().getUser_id().equals("")) {
+                    if (products.getWishlist().equals("n")) {
+                        wishList(products, "y", holder.product_fav, from);
+                    } else {
+                        wishList(products, "n", holder.product_fav, from);
+                    }
+                } else {
+                    Intent in_login = new Intent(getActivity(), LoginPage.class);
+                    startActivity(in_login);
+                }
             }
         });
-    }
-
-    public void SetData2(TrendingAdapter.ViewHolder holder, Products products) {
-        holder.name.setText(products.getProduct_name());
-        holder.price_orginal.setPaintFlags(holder.price_orginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.tv_addcart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), DetailsPage.class);
-                startActivity(i);
-            }
-        });
-        holder.thumbnail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), DetailsPage.class);
-                startActivity(i);
+                if (!Pref.getIn().getUser_id().equals("")) {
+                    if (products.getAddtocart().equals("n")) {
+                        addCart(products, "y", from);
+                    } else {
+                        addCart(products, "n", from);
+                    }
+                } else {
+                    Intent in_login = new Intent(getActivity(), LoginPage.class);
+                    startActivity(in_login);
+                }
             }
         });
     }
@@ -525,4 +528,105 @@ public class Fragment_Home extends Fragment {
         }
         return ("₹ " + result + lastDigit);
     }
+
+    public void wishList(final MyProduct products, final String wish, final AppCompatImageView imageView, final String from) {
+        Map<String, String> params = new HashMap<>();
+        params.put("action", getResources().getString(R.string.wishlist_api));
+        params.put("product_id", products.getProduct_id());
+        params.put("wishlist", wish);
+        RetrofitClient.getInstance().doBackProcess(getActivity(), params, "", new APIResponse() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onSuccess(String Response) {
+                try {
+                    int status;
+                    JSONObject object = new JSONObject(Response);
+                    status = object.getInt("status");
+                    if (status == 1) {
+                        showBadge(getActivity(), bottomNavigationView, R.id.navigation_wishlist, object.getInt("wishlist_count"));
+                        if (wish.equals("n")) {
+                            Toast.makeText(getActivity(), "Successfully removed from wish list", Toast.LENGTH_SHORT).show();
+                            imageView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.fav_none2));
+                            products.setWishlist("n");
+                        } else {
+                            Toast.makeText(getActivity(), "Successfully added to wish list", Toast.LENGTH_SHORT).show();
+                            products.setWishlist("y");
+                            Animation animBlink = AnimationUtils.loadAnimation(getActivity(),
+                                    R.anim.blink);
+                            animBlink.setDuration(1000);
+                            imageView.startAnimation(animBlink);
+                            imageView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.fav_done2));
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    imageView.clearAnimation();
+
+                                }
+                            }, 1000);
+                        }
+                        if (from.equals("1")) {
+                            pAdapter1.notifyDataSetChanged();
+                        } else {
+                            pAdapter2.notifyDataSetChanged();
+                        }
+                    } else {
+                        AppConstants.apiStatusRes(getActivity(), status, object);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String res) {
+                AppConstants.apiFailure(getActivity(), res);
+            }
+        });
+    }
+
+    public void addCart(final MyProduct products, final String cart, final String from) {
+        Map<String, String> params = new HashMap<>();
+        params.put("action", getResources().getString(R.string.addtocart));
+        params.put("product_id", products.getProduct_id());
+        params.put("cart", cart);
+        RetrofitClient.getInstance().doBackProcess(getActivity(), params, "", new APIResponse() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onSuccess(String Response) {
+                try {
+                    int status;
+                    JSONObject object = new JSONObject(Response);
+                    status = object.getInt("status");
+                    if (status == 1) {
+                        if (cart.equals("y")) {
+                            Toast.makeText(getActivity(), "Successfully added to cart", Toast.LENGTH_SHORT).show();
+                            products.setAddtocart("y");
+                        } else {
+                            Toast.makeText(getActivity(), "Successfully removed from cart", Toast.LENGTH_SHORT).show();
+                            products.setAddtocart("n");
+                        }
+                        if (from.equals("1")) {
+                            pAdapter1.notifyDataSetChanged();
+                        } else {
+                            pAdapter2.notifyDataSetChanged();
+                        }
+                       // mNotifCount=object.getInt("cart_count");
+                     //   invalidateOptionsMenu();
+                       refreshMenu(object.getInt("cart_count"));
+
+                    } else {
+                        AppConstants.apiStatusRes(getActivity(), status, object);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String res) {
+                AppConstants.apiFailure(getActivity(), res);
+            }
+        });
+    }
+
 }

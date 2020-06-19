@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.aniapps.models.Images;
 import com.aniapps.siri.R;
 import com.bumptech.glide.Glide;
 

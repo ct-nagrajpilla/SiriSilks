@@ -6,9 +6,9 @@ import android.util.Log;
 
 import com.aniapps.siri.BuildConfig;
 import com.aniapps.siri.MainActivity;
+import com.aniapps.siri.R;
 import com.aniapps.utils.Pref;
 import com.aniapps.utils.ProgressDialog;
-import com.aniapps.siri.R;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -94,6 +94,9 @@ public class RetrofitClient extends MainActivity {
         postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
         postParams.put("device_id", Pref.getIn().getDeviceId());
         postParams.put("app_code", Pref.getIn().getApp_code());
+        params.put("mobile", Pref.getIn().getMobile_number());
+        params.put("user_id",Pref.getIn().getUser_id());
+        Log.e("####", "POST" + postParams);
         apiService.getApiResult(context.getResources().getString(R.string.core_live), postParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {
@@ -113,7 +116,7 @@ public class RetrofitClient extends MainActivity {
 
                     try {
                         if (null != res.body() && !res.body().equals("")) {
-                            Log.e("RES","RES"+res.body());
+                            Log.e("RES", "RES" + res.body());
                             api_res.onSuccess(res.body().trim());
 
                         }

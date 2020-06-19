@@ -19,7 +19,6 @@ import androidx.viewpager.widget.ViewPager;
 
 
 import com.aniapps.adapters.ZoomSliderAdapter;
-import com.aniapps.models.Images;
 import com.aniapps.utils.CustomViewPager;
 import com.aniapps.utils.OnLoadMoreListener;
 import com.aniapps.utils.discrete.DiscreteScrollView;
@@ -59,7 +58,6 @@ public class ZoomImageAct extends AppCompatActivity implements
         list.add("https://5.imimg.com/data5/BK/GE/MY-4197884/rajtex-art-silk-saree-32001-32012-500x500.jpg");
         list.add("https://5.imimg.com/data5/KY/AP/MY-4197884/rajtex-art-silk-saree-32001-32012-500x500.jpg");
 
-      //  list = (ArrayList<Images>) getIntent().getExtras().getSerializable("images");
         ic_close = findViewById(R.id.close_back);
         txt_title = findViewById(R.id.txt_title);
         txt_title.setText(getIntent().getStringExtra("title"));
@@ -232,9 +230,7 @@ public class ZoomImageAct extends AppCompatActivity implements
 
         public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
             if (holder instanceof CarThumbnailsViewHolder) {
-                //Images images = imagesList[position];
 
-                // Picasso.with(context).load(images.getImagepath()).fit().centerCrop().into(((CarThumbnailsViewHolder) holder).carThumbnails);
 
                 try {
                     Glide.with(context)
@@ -282,7 +278,6 @@ public class ZoomImageAct extends AppCompatActivity implements
 
         public class CarThumbnailsViewHolder extends RecyclerView.ViewHolder {
             protected ImageView carThumbnails;
-            //   protected Images images;
 
             public CarThumbnailsViewHolder(View view) {
                 super(view);

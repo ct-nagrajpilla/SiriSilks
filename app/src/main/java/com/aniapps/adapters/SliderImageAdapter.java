@@ -11,14 +11,11 @@ import android.widget.RelativeLayout;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.aniapps.models.Images;
 import com.aniapps.siri.OnPagerClick;
 import com.aniapps.siri.R;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.signature.ObjectKey;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class SliderImageAdapter extends PagerAdapter {

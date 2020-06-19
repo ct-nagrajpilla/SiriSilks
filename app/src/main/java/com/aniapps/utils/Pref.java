@@ -62,6 +62,25 @@ public class Pref {
         editor.apply();
     }
 
+    public String getMobile_number() {
+        return pref.getString("mobile_number", "");
+    }
+
+    public void setMobile_number(String mobile_number) {
+        editor.putString("mobile_number", mobile_number);
+        editor.apply();
+    }
+
+    public String getUser_id() {
+        return pref.getString("user_id", "");
+    }
+
+    public void setUser_id(String user_id) {
+        editor.putString("user_id", user_id);
+        editor.apply();
+    }
+
+
     public String getUniqueId() {
         return pref.getString("unique_id", "");
     }
@@ -140,12 +159,21 @@ public class Pref {
 
 
 
-    public int getSelected_count() {
-        return pref.getInt("selected_count",0);
+    public int getCart_count() {
+        return pref.getInt("cart_count",0);
     }
 
-    public void setSelected_count(int selected_count) {
-        editor.putInt("selected_count", selected_count);
+    public void setCart_count(int cart_count) {
+        editor.putInt("cart_count", cart_count);
+        editor.apply();
+    }
+
+    public int getWish_count() {
+        return pref.getInt("wish_count",0);
+    }
+
+    public void setWish_count(int wish_count) {
+        editor.putInt("wish_count", wish_count);
         editor.apply();
     }
 }

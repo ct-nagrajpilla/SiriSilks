@@ -11,16 +11,10 @@ import android.widget.ProgressBar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.aniapps.models.Images;
 import com.aniapps.siri.R;
-import com.aniapps.utils.ImageSelectionEvent;
 import com.aniapps.utils.OnLoadMoreListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.ObjectKey;
-
-import org.greenrobot.eventbus.EventBus;
-
-import java.util.List;
 
 public class CarThumbnailsAdapter extends RecyclerView.Adapter {
     private final int VIEW_ITEM = 1;
@@ -93,9 +87,7 @@ public class CarThumbnailsAdapter extends RecyclerView.Adapter {
 
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof CarThumbnailsViewHolder) {
-            //Images images = imagesList[position];
 
-           // Picasso.with(context).load(images.getImagepath()).fit().centerCrop().into(((CarThumbnailsViewHolder) holder).carThumbnails);
 
             try {
                 Glide.with(context).load(imagesList[position]).signature(new ObjectKey("1")).placeholder(R.mipmap.fav_none).fitCenter().into(((CarThumbnailsViewHolder) holder).carThumbnails);
@@ -131,7 +123,6 @@ public class CarThumbnailsAdapter extends RecyclerView.Adapter {
 
     public class CarThumbnailsViewHolder extends RecyclerView.ViewHolder {
         protected ImageView carThumbnails;
-     //   protected Images images;
 
         public CarThumbnailsViewHolder(View view) {
             super(view);

@@ -1,30 +1,22 @@
 package com.aniapps.siri;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.TranslateAnimation;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.aniapps.models.Products;
+import com.aniapps.models.MyProduct;
 import com.aniapps.utils.Pref;
 import com.aniapps.utils.quatity.NumberPicker;
 import com.bumptech.glide.Glide;
@@ -36,22 +28,13 @@ public class Fragment_WishList extends Fragment {
     RecyclerView rc_wishlist;
     AppCompatTextView tv_place_order;
     WishListAdapter wishListAdapter;
-    ArrayList<Products> myProducts = new ArrayList<>();
-    AppCompatImageView heart;
+    ArrayList<MyProduct> myProducts = new ArrayList<>();
     View menu_cart;
 
-    public Fragment_WishList(View menu_cart, AppCompatImageView heart) {
+    public Fragment_WishList(View menu_cart) {
         this.menu_cart = menu_cart;
-        this.heart=heart;
-        // Required empty public constructor
     }
-/*
-    public static Fragment_WishList newInstance(String param1, String param2) {
-        Fragment_WishList fragment = new Fragment_WishList(menu_cart);
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }*/
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,10 +53,10 @@ public class Fragment_WishList extends Fragment {
         rc_wishlist.setNestedScrollingEnabled(false);
 
         for (int i = 0; i < 10; i++) {
-            Products products = new Products();
+            MyProduct products = new MyProduct();
             products.setProduct_name("Light blue wovern banarasi sareen with blouse");
             products.setProduct_company("Siri Sarees");
-            products.setProduct_fav("y");
+            products.setWishlist("y");
             products.setProduct_id("" + i + 1000);
             products.setProduct_image("https://5.imimg.com/data5/BK/GE/MY-4197884/rajtex-art-silk-saree-32001-32012-500x500.jpg");
             products.setProduct_img_count("0");
@@ -82,15 +65,14 @@ public class Fragment_WishList extends Fragment {
             products.setProduct_quantity("10");
             myProducts.add(products);
         }
-        wishListAdapter = new WishListAdapter(myProducts, heart);
+        wishListAdapter = new WishListAdapter(myProducts);
         rc_wishlist.setAdapter(wishListAdapter);
         return view;
     }
 
 
     class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.ViewHolder> {
-        ArrayList<Products> myProducts = new ArrayList<>();
-        AppCompatImageView heart;
+        ArrayList<MyProduct> myProducts = new ArrayList<>();
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public AppCompatTextView product_title, product_price, product_company, product_message, product_addcart;
@@ -113,9 +95,8 @@ public class Fragment_WishList extends Fragment {
             }
         }
 
-        public WishListAdapter(ArrayList<Products> myProducts, AppCompatImageView heart) {
+        public WishListAdapter(ArrayList<MyProduct> myProducts) {
             this.myProducts = myProducts;
-            this.heart = heart;
         }
 
 
@@ -142,7 +123,7 @@ public class Fragment_WishList extends Fragment {
 
     }
 
-    public void SetData(WishListAdapter.ViewHolder holder, Products products) {
+    public void SetData(WishListAdapter.ViewHolder holder, MyProduct products) {
 
         holder.product_title.setText(products.getProduct_name());
         try {
@@ -154,9 +135,9 @@ public class Fragment_WishList extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (Pref.getIn().getSelected_count() > 0) {
+        if (Pref.getIn().getCart_count() > 0) {
             ((AppCompatTextView) getActivity().findViewById(R.id.filter_count)).setVisibility(View.VISIBLE);
-            ((AppCompatTextView) getActivity().findViewById(R.id.filter_count)).setText("" + Pref.getIn().getSelected_count());
+            ((AppCompatTextView) getActivity().findViewById(R.id.filter_count)).setText("" + Pref.getIn().getCart_count());
         } else {
             ((AppCompatTextView) getActivity().findViewById(R.id.filter_count)).setVisibility(View.GONE);
         }
@@ -182,70 +163,16 @@ public class Fragment_WishList extends Fragment {
         holder.product_fav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              /*  int width = 0;
-                int[] locations = new int[2];
-                v.getLocationOnScreen(locations);
-                CoordinatorLayout.LayoutParams layoutParams = new CoordinatorLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
-                layoutParams.setMargins(locations[0],
-                        locations[1] - dpToPx(30, getActivity()), 0, 0);
-                width = dpToPx(7, getActivity());
-                heart.setLayoutParams(layoutParams);
-                heart.setVisibility(View.VISIBLE);
-                scaleAnimation(v, width);*/
-               Pref.getIn().setSelected_count(Pref.getIn().getSelected_count() + 1);
-
-             //   Pref.getIn().setSelected_count(Pref.getIn().getSelected_count() - 1);
-              ((AppCompatTextView) getActivity().findViewById(R.id.filter_count)).setText("" + Pref.getIn().getSelected_count());
+               // Pref.getIn().setWish_count(Pref.getIn().getWish_count() + 1);
+               // ((AppCompatTextView) getActivity().findViewById(R.id.filter_count)).setText("" + Pref.getIn().getWish_count());
             }
         });
 
     }
 
-    public int dpToPx(int dp, Activity context) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        int pixels = (int) (dp * scale + 0.5f);
-        return pixels;
-    }
 
-    private void scaleAnimation(final View heart2, int width) {
-        int startViewLocation[] = new int[2];
-        heart2.getLocationInWindow(startViewLocation);
-        int finishViewLocation[] = new int[2];
-        menu_cart.getLocationInWindow(finishViewLocation);
-        int startX = startViewLocation[0] + heart2.getWidth() / 2;
-        int startY = startViewLocation[1] + heart2.getHeight() / 2;
-        int endX = finishViewLocation[0] + menu_cart.getWidth() / 2;
-        int endY = finishViewLocation[1] + menu_cart.getHeight() / 2;
-        TranslateAnimation animation = new TranslateAnimation(0,
-                finishViewLocation[0] - startViewLocation[0] + width, 0,
-                finishViewLocation[1] - startViewLocation[1] + (width / 2));
-        animation.setDuration(1000);
-        // animation.setStartOffset(50);
-        animation.setAnimationListener(new Animation.AnimationListener() {
 
-            @Override
-            public void onAnimationStart(Animation animation) {
 
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                heart.setVisibility(View.GONE);
-                Animation fadeIn = new AlphaAnimation(0, 1);
-                fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
-                fadeIn.setDuration(1000);
-                menu_cart.startAnimation(fadeIn);
-            }
-        });
-        heart.startAnimation(animation);
-    }
 
     public static String rupeeFormat(String value) {
         value = value.replace(",", "").replace("₹ ", "").replace("₹", "");

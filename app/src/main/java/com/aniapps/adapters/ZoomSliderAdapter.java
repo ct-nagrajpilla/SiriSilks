@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.aniapps.models.Images;
 import com.aniapps.siri.R;
 import com.aniapps.utils.photoview.PhotoView;
 import com.bumptech.glide.Glide;

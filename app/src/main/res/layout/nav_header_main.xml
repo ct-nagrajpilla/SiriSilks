@@ -29,7 +29,7 @@
             android:layout_margin="2sp"
             android:fontFamily="@font/cera_gr_medium"
             android:gravity="center_vertical"
-            android:text="NAGRAJ PILLA"
+            android:text="DEMO USER"
             android:textColor="@color/white" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -39,7 +39,7 @@
             android:layout_margin="2sp"
             android:fontFamily="@font/cera_gr_regular"
             android:gravity="center_vertical"
-            android:text="KAKINDANA"
+            android:text="HYDERABAD"
             android:textColor="@color/white" />
 
     </LinearLayout>

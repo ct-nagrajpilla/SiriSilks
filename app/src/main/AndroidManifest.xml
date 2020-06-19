@@ -35,8 +35,14 @@
                 android:resource="@xml/searchable" />
 
         </activity>
-        <activity android:name=".DetailsPage"/>
-        <activity android:name=".ZoomImageAct"/>
+        <activity android:name=".DetailsPage" />
+        <activity android:name=".ZoomImageAct" />
+        <activity android:name=".ListingPage" />
+        <activity
+            android:name=".LoginPage"
+            android:excludeFromRecents="true"
+            android:theme="@style/ThemeDialogCustom_Vaahan"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
     </application>
 
 </manifest>

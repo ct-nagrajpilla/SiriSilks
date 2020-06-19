@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -29,7 +28,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.aniapps.adapters.SliderImageAdapter;
 import com.aniapps.callbackclient.APIResponse;
 import com.aniapps.callbackclient.RetrofitClient;
-import com.aniapps.models.Product;
+import com.aniapps.models.Product_Details;
 import com.aniapps.utils.ProgressDialog;
 import com.aniapps.utils.ScrollingPagerIndicator;
 import com.bumptech.glide.Glide;
@@ -40,7 +39,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class DetailsPage extends AppCompatActivity {
     ViewPager viewPager;
@@ -91,7 +89,7 @@ public class DetailsPage extends AppCompatActivity {
     }
 
 
-    private void setLCImages(final Product object) {
+    private void setLCImages(final Product_Details object) {
         SliderImageAdapter adapter = new SliderImageAdapter(DetailsPage.this, object.getProduct_all_images(), new OnPagerClick() {
             @Override
             public void onClick(int position, View view) {
@@ -193,7 +191,7 @@ public class DetailsPage extends AppCompatActivity {
 
 
     public void myProduct() {
-        Product product = new Product();
+        Product_Details product = new Product_Details();
         ArrayList<String> myImages = new ArrayList<>();
         myImages.add("https://5.imimg.com/data5/MD/EV/MY-4197884/rajtex-art-silk-saree-32001-32012-500x500.jpg");
         myImages.add("https://5.imimg.com/data5/OE/PC/MY-4197884/rajtex-art-silk-saree-32001-32012-500x500.jpg");
@@ -231,8 +229,8 @@ public class DetailsPage extends AppCompatActivity {
                     int status = jsonobject.getInt("status");
                     if (status == 1) {
                         JSONArray auction_list = jsonobject.getJSONArray("auction_list");
-                        Product myObject = new Gson().fromJson(auction_list
-                                .getJSONObject(0).toString(), Product.class);
+                        Product_Details myObject = new Gson().fromJson(auction_list
+                                .getJSONObject(0).toString(), Product_Details.class);
                         setLCImages(myObject);
                     } else {
                         apiStatusRes(DetailsPage.this, status, jsonobject);

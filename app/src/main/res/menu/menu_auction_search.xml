@@ -16,13 +16,5 @@
         android:visible="false"
         app:actionLayout="@layout/countlayout"
         app:showAsAction="always" />
-  <!--  <item
-        android:id="@+id/action_cart"
-        android:icon="@mipmap/icon_cart"
-        android:iconTintMode="add"
-        android:title="Share"
-        android:visible="true"
-        android:iconTint="@color/black"
-        app:showAsAction="always|collapseActionView" />
--->
+
 </menu>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,7 +34,7 @@
                     android:layout_margin="2sp"
                     android:fontFamily="@font/cera_gr_medium"
                     android:gravity="center_vertical"
-                    android:text="NAGRAJ PILLA"
+                    tools:text="NAGRAJ PILLA"
                     android:textColor="@color/white" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -43,7 +44,7 @@
                     android:layout_margin="2sp"
                     android:fontFamily="@font/cera_gr_regular"
                     android:gravity="center_vertical"
-                    android:text="KAKINDANA"
+                    tools:text="KAKINDANA"
                     android:textColor="@color/white" />
 
             </LinearLayout>
@@ -67,17 +68,17 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/display_text"
                     android:gravity="center_vertical"
-                    android:text="Address: D.No: 4-143, Gaigolupadu, Kakinada, East Godavari, AP - 533005." />
+                    tools:text="Address: D.No: 4-143, Gaigolupadu, Kakinada, East Godavari, AP - 533005." />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/display_text"
                     android:gravity="center_vertical"
-                    android:text="Email: pilla.nagaraju@gmail.com" />
+                    tools:text="Email: pilla.nagaraju@gmail.com" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/display_text"
                     android:gravity="center_vertical"
-                    android:text="Phone: +919441349123" />
+                    tools:text="Phone: +919441349123" />
             </LinearLayout>
 
 

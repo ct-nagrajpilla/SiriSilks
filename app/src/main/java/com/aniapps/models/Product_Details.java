@@ -2,7 +2,7 @@ package com.aniapps.models;
 
 import java.util.ArrayList;
 
-public class Product {
+public class Product_Details {
     String product_name="", product_id="",product_details="";
     public ArrayList<String> product_all_images = null;
 

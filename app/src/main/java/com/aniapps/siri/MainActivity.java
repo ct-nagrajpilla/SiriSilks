@@ -1,37 +1,28 @@
 package com.aniapps.siri;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.Editable;
-import android.text.Selection;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -44,11 +35,11 @@ import androidx.fragment.app.Fragment;
 import com.aniapps.adapters.MenuAdapter;
 import com.aniapps.callbackclient.APIResponse;
 import com.aniapps.callbackclient.RetrofitClient;
-import com.aniapps.models.NewArrivals;
 import com.aniapps.models.MyAreas;
 import com.aniapps.models.MyCategories;
+import com.aniapps.models.NewArrivals;
 import com.aniapps.models.OtherMenu;
-import com.aniapps.models.Products;
+import com.aniapps.models.MyProduct;
 import com.aniapps.models.SubCategory;
 import com.aniapps.models.Trending;
 import com.aniapps.utils.Pref;
@@ -65,16 +56,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-import static android.view.View.GONE;
-
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppConstants implements NavigationView.OnNavigationItemSelectedListener {
 
     Toolbar toolbar;
     ExpandableListView expandableListView;
     NavigationView navigationView;
-    AppCompatImageView heart;
+    public static DrawerLayout drawer;
+    public static BottomNavigationView bottomNavigationView;
 
     @SuppressLint("HardwareIds")
     @Override
@@ -84,16 +73,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("Siri Silks");
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.nav_view2);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        showBadge(this, navigation, R.id.navigation_wishlist, "1");
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.nav_view2);
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         expandableListView = findViewById(R.id.expandable_menu);
-        heart = findViewById(R.id.heart);
-        Pref.getIn().saveDeviceId(Settings.Secure.getString(getApplicationContext()
-                .getContentResolver(), Settings.Secure.ANDROID_ID));
-        if (Pref.getIn().getApp_code().length() <= 0) {
-            Pref.getIn().setApp_code(getRandomNumber());
-        }
         apiCall();
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -103,32 +85,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setAction("Action", null).show();
             }
         });
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView = findViewById(R.id.nav_view);
-
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
-    public String getRandomNumber() {
-        return UUID.randomUUID().toString();
+    @Override
+    protected void onResume() {
+        super.onResume();
+       /* if (Pref.getIn().getCart_count() > 0) {
+            ((AppCompatTextView) menu_cart.findViewById(R.id.filter_count)).setVisibility(View.VISIBLE);
+            ((AppCompatTextView) menu_cart.findViewById(R.id.filter_count)).setText("" + Pref.getIn().getCart_count());
+        } else {
+            ((AppCompatTextView) menu_cart.findViewById(R.id.filter_count)).setVisibility(View.GONE);
+        }*/
     }
+
     //https://stackoverflow.com/questions/42682855/display-badge-on-top-of-bottom-navigation-bars-icon
-    public void showBadge(Context context, BottomNavigationView
-            bottomNavigationView, @IdRes int itemId, String value) {
+    @SuppressLint("SetTextI18n")
+    public static void showBadge(Context context, BottomNavigationView
+            bottomNavigationView, @IdRes int itemId, int value) {
+        Log.e("####", "Value" + value);
         removeBadge(bottomNavigationView, itemId);
         BottomNavigationItemView itemView = bottomNavigationView.findViewById(itemId);
         View badge = LayoutInflater.from(context).inflate(R.layout.badge, bottomNavigationView, false);
-
         TextView text = badge.findViewById(R.id.badge_text_view);
-        text.setText(value);
-        itemView.addView(badge);
+        text.setText("" + value);
+        if (value != 0) {
+            itemView.addView(badge);
+        } else {
+            itemView.removeView(badge);
+        }
+
     }
 
-    public void removeBadge(BottomNavigationView bottomNavigationView, @IdRes int itemId) {
+
+    public static void removeBadge(BottomNavigationView bottomNavigationView, @IdRes int itemId) {
         BottomNavigationItemView itemView = bottomNavigationView.findViewById(itemId);
         if (itemView.getChildCount() == 4) {
             itemView.removeViewAt(2);
@@ -141,23 +138,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Menu menu;
     AppCompatImageView clear;
     MenuItem menuItem;
-
     View menu_cart;
-    AppCompatTextView filter_count;
-    public static int REQUEST_CODE = 999;
+    public static AppCompatTextView filter_count;
+    public static int mNotifCount = 0;
 
     public boolean onCreateOptionsMenu(Menu menuu) {
         this.menu = menuu;
-
         final MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_auction_search, menu);
         menuItem = menu.findItem(
                 R.id.action_search);
-
         menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                // eventTrack(Bluejack_Auctions.this, "Auctions", "Auctions|Search");
                 return false;
             }
         });
@@ -258,17 +251,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         item_done.setVisible(true);
         menu_cart = item_done.getActionView();
         filter_count = menu_cart.findViewById(R.id.filter_count);
-
+        if(Pref.getIn().getCart_count()>0) {
+            filter_count.setVisibility(View.VISIBLE);
+            filter_count.setText("" + Pref.getIn().getCart_count());
+        }
         menu_cart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alertOtp();
+                Intent intent = new Intent(MainActivity.this, LoginPage.
+                        class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             }
         });
 
         return super.onCreateOptionsMenu(menu);
     }
 
+    public void setNotifCount(int count) {
+        mNotifCount = count;
+        invalidateOptionsMenu();
+    }
+
+    public static void refreshMenu(int count) {
+        filter_count.setVisibility(View.VISIBLE);
+        filter_count.setText("" + count);
+    }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -282,15 +290,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void hideKeyboard() {
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager inputManager = (InputMethodManager) this
-                    .getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(view.getWindowToken(),
-                    InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -312,11 +311,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     toolbar.setTitle("Home");
-                    fragment = new Fragment_Home(MainActivity.this, areas,parr_newarrivals,parr_trendings);
+                    fragment = new Fragment_Home(MainActivity.this, areas, parr_newarrivals, parr_trendings);
                     break;
                 case R.id.navigation_wishlist:
                     toolbar.setTitle("Wish List");
-                    fragment = new Fragment_WishList(menu_cart, heart);
+                    fragment = new Fragment_WishList(menu_cart);
                     break;
                 case R.id.navigation_orders:
                     toolbar.setTitle("My Oders");
@@ -348,44 +347,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-   /* @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.action_cart:
-                alertOtp();
-                // do stuff, like showing settings fragment
-                return true;
-
-            case R.id.action_search:
-                // do stuff, like showing settings fragment
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item); // important line
-    }*/
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return false;
     }
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // apiCall();
-
-    }
-
     Gson gson = new Gson();
     MyCategories mainCategories;
     NewArrivals homeArray;
-    ArrayList<NewArrivals> arr_newarrivals=new ArrayList<>();
-    ArrayList<Products> parr_newarrivals=new ArrayList<>();
-    ArrayList<Trending> arr_trendings=new ArrayList<>();
-    ArrayList<Products> parr_trendings=new ArrayList<>();
+    ArrayList<NewArrivals> arr_newarrivals = new ArrayList<>();
+    ArrayList<MyProduct> parr_newarrivals = new ArrayList<>();
+    ArrayList<Trending> arr_trendings = new ArrayList<>();
+    ArrayList<MyProduct> parr_trendings = new ArrayList<>();
     ArrayList<MyAreas> areas = new ArrayList<>();
 
     public void apiCall() {
@@ -422,40 +396,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             areas.add(areas1);
                             JSONArray resultArray2 = resultArray.getJSONObject(i).getJSONArray("categories");
                             ArrayList<SubCategory> subCategory_list = new ArrayList<>();
-                            for (int j = 0; j < resultArray2.length(); j++) {
-                                SubCategory subCategory = gson.fromJson(resultArray2.getJSONObject(j).toString(), SubCategory.class);
-                                subCategory_list.add(subCategory);
-                            }
+                            if (resultArray2.length() > 1)
+                                for (int j = 0; j < resultArray2.length(); j++) {
+                                    SubCategory subCategory = gson.fromJson(resultArray2.getJSONObject(j).toString(), SubCategory.class);
+                                    subCategory_list.add(subCategory);
+                                }
                             mainCategories = new MyCategories(categories.getName(), categories.getId(), subCategory_list);
                             mainCategory_list.add(mainCategories);
                         }
                         for (int k = 0; k < otherArray.length(); k++) {
                             mainCategory_list.add(new MyCategories(otherArray.get(k).toString()));
                         }
-                        MenuAdapter mainAdapter = new MenuAdapter(MainActivity.this, mainCategory_list);
+                        MenuAdapter mainAdapter = new MenuAdapter(MainActivity.this, mainCategory_list, expandableListView);
                         expandableListView.setAdapter(mainAdapter);
 
                         for (int i = 0; i < new_arrival.length(); i++) {
                             NewArrivals newArrivals = gson.fromJson(new_arrival.getJSONObject(i).toString(), NewArrivals.class);
                             arr_newarrivals.add(newArrivals);
-                            ArrayList<Products> productsArrayList=new ArrayList<>();
+                            ArrayList<MyProduct> productsArrayList = new ArrayList<>();
                             JSONArray resultArray2 = new_arrival.getJSONObject(i).getJSONArray("products");
                             for (int j = 0; j < resultArray2.length(); j++) {
-                                Products subCategory = gson.fromJson(resultArray2.getJSONObject(j).toString(), Products.class);
+                                MyProduct subCategory = gson.fromJson(resultArray2.getJSONObject(j).toString(), MyProduct.class);
                                 parr_newarrivals.add(subCategory);
                             }
                         }
-
-                       /* for (int i = 0; i < trend_arrival.length(); i++) {
+                        for (int i = 0; i < trend_arrival.length(); i++) {
                             Trending newArrivals = gson.fromJson(trend_arrival.getJSONObject(i).toString(), Trending.class);
                             arr_trendings.add(newArrivals);
                             JSONArray resultArray2 = trend_arrival.getJSONObject(i).getJSONArray("products");
                             for (int j = 0; j < resultArray2.length(); j++) {
-                                Products subCategory = gson.fromJson(resultArray2.getJSONObject(j).toString(), Products.class);
+                                MyProduct subCategory = gson.fromJson(resultArray2.getJSONObject(j).toString(), MyProduct.class);
                                 parr_trendings.add(subCategory);
                             }
-                        }*/
-                        loadFragment(new Fragment_Home(MainActivity.this, areas,parr_newarrivals,parr_trendings));
+                        }
+
+                        Pref.getIn().setCart_count(object.getInt("cart_count"));
+                        showBadge(MainActivity.this, bottomNavigationView, R.id.navigation_wishlist, object.getInt("wishlist_count"));
+                        loadFragment(new Fragment_Home(MainActivity.this, areas, parr_newarrivals, parr_trendings));
                     } else {
                         apiStatusRes(MainActivity.this, status, object);
                     }
@@ -469,298 +446,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 apiFailure(MainActivity.this, res);
             }
         });
-    }
-
-
-    public void apiStatusRes(Context ctx, int status, JSONObject job) {
-        if (status == 3) {
-            String exceptionTitle = "", exceptionMessage = "";
-            try {
-                exceptionTitle = job.getString("details");
-                JSONObject details = job
-                        .getJSONObject("validationErrors");
-                JSONArray verrors = details
-                        .getJSONArray("validationerror");
-                for (int i = 0; i < verrors.length(); i++) {
-                    JSONObject myvalue = verrors.getJSONObject(i);
-                    exceptionMessage = myvalue.getString("description");
-                }
-                alertMessage(ctx, exceptionTitle, exceptionMessage);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                alertMessage(ctx, "Alert..!", job.getString("details"));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void apiFailure(Context ctx, String res) {
-        if (res.equals("")) {
-            try {
-                alertMessage(ctx, "Oops..!", "Connection failed, please try again");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                alertMessage(ctx, "Oops..!", res);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    public void alertMessage(Context context, String title, String msg) {
-        final Dialog myDialog = new Dialog(context, R.style.ThemeDialogCustom);
-        myDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        myDialog.setContentView(R.layout.dialog_alert);
-        AppCompatTextView alert_title = myDialog.findViewById(R.id.alert_title);
-        AppCompatTextView alert_message = myDialog.findViewById(R.id.alert_text);
-        alert_title.setText(title);
-        alert_message.setText(msg);
-        myDialog.findViewById(R.id.btn_alert_ok).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myDialog.dismiss();
-            }
-        });
-        myDialog.show();
-    }
-
-    String otp_val = "";
-    AppCompatTextView txt_resend_verification_code;
-    String mobile_number = "";
-    Dialog otp_dialog;
-    AppCompatEditText et_mobile, edttxt_1, edttxt_2, edttxt_3, edttxt_4;
-
-    public void alertOtp() {
-        otp_val = "";
-        final AppCompatTextView btn_submit;
-        final LinearLayout linear_otp;
-        AppCompatImageView image_close;
-
-        otp_dialog = new Dialog(this, R.style.ThemeDialogCustom);
-        otp_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        otp_dialog.setContentView(R.layout.custom_alert_dialogue);
-        otp_dialog.setCancelable(true);
-        otp_dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-        btn_submit = otp_dialog.findViewById(R.id.btn_submit);
-        image_close = otp_dialog.findViewById(R.id.image_close);
-        txt_resend_verification_code = otp_dialog.findViewById(R.id.txt_resend_verification_code);
-        linear_otp = otp_dialog.findViewById(R.id.linear_otp);
-        et_mobile = otp_dialog.findViewById(R.id.et_mobile);
-        edttxt_1 = otp_dialog.findViewById(R.id.edttxt_1);
-        edttxt_2 = otp_dialog.findViewById(R.id.edttxt_2);
-        edttxt_3 = otp_dialog.findViewById(R.id.edttxt_3);
-        edttxt_4 = otp_dialog.findViewById(R.id.edttxt_4);
-        txt_resend_verification_code.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Verification code sent to your mobile " + mobile_number, Toast.LENGTH_SHORT).show();
-            }
-        });
-        listen();
-
-
-        btn_submit.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                mobile_number = et_mobile.getText().toString();
-                et_mobile.setVisibility(GONE);
-                linear_otp.setVisibility(View.VISIBLE);
-                btn_submit.setVisibility(GONE);
-                //  myDialog.dismiss();
-
-            }
-        });
-        image_close.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                otp_dialog.dismiss();
-            }
-        });
-
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        int width = metrics.widthPixels;
-        int height = metrics.heightPixels;
-        otp_dialog.getWindow().setLayout((6 * width) / 7, (4 * height) / 5);
-        otp_dialog.show();
-    }
-
-    public void listen() {
-        edttxt_1.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if (s.length() == 0) {
-                    edttxt_1.requestFocus();
-
-                }
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 1) {
-                    edttxt_2.requestFocus();
-
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        edttxt_2.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 1) {
-                    if (edttxt_1.getText().length() == 0) {
-                        edttxt_1.setText(edttxt_2.getText().toString());
-                        edttxt_2.setText("");
-                        edttxt_2.requestFocus();
-                    } else {
-
-                        edttxt_3.requestFocus();
-                    }
-
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 0) {
-                    int position = edttxt_1.getText().length();
-                    Editable editObj = edttxt_1.getText();
-                    Selection.setSelection(editObj, position);
-                    edttxt_1.requestFocus();
-                }
-            }
-        });
-
-        edttxt_3.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 1) {
-                    if (edttxt_1.getText().length() == 0) {
-
-                        edttxt_1.setText(edttxt_3.getText().toString());
-                        edttxt_3.setText("");
-
-                        if (edttxt_2.getText().length() == 0) {
-                            edttxt_2.requestFocus();
-                        } else {
-                            edttxt_3.requestFocus();
-                        }
-
-                    } else if (edttxt_2.getText().length() == 0) {
-
-                        edttxt_2.setText(edttxt_3.getText().toString());
-                        edttxt_3.setText("");
-
-                        edttxt_3.requestFocus();
-                    } else {
-                        edttxt_4.requestFocus();
-                    }
-
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 0) {
-                    int position = edttxt_2.getText().length();
-                    Editable editObj = edttxt_2.getText();
-                    Selection.setSelection(editObj, position);
-                    edttxt_2.requestFocus();
-                }
-            }
-        });
-
-        edttxt_4.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 1) {
-                    if (edttxt_1.getText().length() == 0) {
-                        edttxt_1.setText(edttxt_4.getText().toString());
-                        edttxt_4.setText("");
-                        edttxt_2.requestFocus();
-                    } else if (edttxt_2.getText().length() == 0) {
-                        edttxt_2.setText(edttxt_4.getText().toString());
-                        edttxt_4.setText("");
-                        edttxt_3.requestFocus();
-                    } else if (edttxt_3.getText().length() == 0) {
-                        edttxt_3.setText(edttxt_4.getText().toString());
-                        edttxt_4.setText("");
-                        edttxt_4.requestFocus();
-                    } else {
-                        try {
-                            otp_val = edttxt_1.getText().toString() + edttxt_2.getText().toString() + edttxt_3.getText().toString() + edttxt_4.getText().toString();
-                            if (otp_val.length() == 4 && otp_val.equals("1234")) {
-                                /*if (other_yard.getVisibility() == View.VISIBLE) {
-                                    stopService(2, spn_yard_selection.getSelectedItemPosition(), _force_stop);
-                                } else {
-                                    stopService(1, spn_yard_selection.getSelectedItemPosition(), _force_stop);
-                                }*/
-                                otp_dialog.dismiss();
-                                Toast.makeText(MainActivity.this, "OTP Verified ", Toast.LENGTH_SHORT).show();
-
-                            } else {
-                                Toast.makeText(MainActivity.this, "Please fill valid otp", Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 0) {
-                    int position = edttxt_3.getText().length();
-                    Editable editObj = edttxt_3.getText();
-                    Selection.setSelection(editObj, position);
-                    edttxt_3.requestFocus();
-                }
-            }
-        });
-        edttxt_1.requestFocus();
-    }
-
-    // check net is connecting or net
-    public boolean isConnectingToInternet() {
-        ConnectivityManager connectivity = (ConnectivityManager) this
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity != null) {
-            NetworkInfo[] info = connectivity.getAllNetworkInfo();
-            if (info != null)
-                for (NetworkInfo anInfo : info)
-                    if (anInfo.getState() == NetworkInfo.State.CONNECTED) {
-                        return true;
-                    }
-        }
-        return false;
     }
 }

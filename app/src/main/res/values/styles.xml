@@ -6,13 +6,13 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor">@color/colorAccent</item>
         <item name="colorControlNormal">@color/colorPrimary</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="drawerArrowStyle">@style/AppTheme.DrawerArrowToggle</item>
         <item name="colorControlNormal">@color/colorPrimary</item>
     </style>
 
@@ -22,6 +22,9 @@
     </style>
 
 
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="MyCustomTabLayout" parent="Theme.AppCompat">
         <item name="tabIndicatorColor">@color/colorPrimaryDark</item>
@@ -33,9 +36,7 @@
         <item name="tabSelectedTextColor">@color/black</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="ThemeDialogCustom">
         <item name="android:windowFrame">@null</item>
@@ -94,5 +95,14 @@
         <item name="spi_visibleDotCount">5</item>
         <item name="spi_visibleDotThreshold">2</item>
         <item name="spi_looped">false</item>
+    </style>
+    <style name="ThemeDialogCustom_Vaahan" parent="AppTheme">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowBackground">@color/transparent_color</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan|adjustResize</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
     </style>
 </resources>

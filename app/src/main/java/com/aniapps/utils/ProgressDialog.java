@@ -5,10 +5,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.view.Window;
-import android.widget.ProgressBar;
 
 import com.aniapps.siri.MainActivity;
 import com.aniapps.siri.R;
+import com.aniapps.utils.mkloader.MKLoader;
 
 /**
  * Created by NagRaj_Pilla on 4/19/2017.
@@ -18,7 +18,7 @@ import com.aniapps.siri.R;
 public class ProgressDialog extends MainActivity {
     public static Dialog dialog;
     private static ProgressDialog mInstance;
-    android.widget.ProgressBar cpb;
+    MKLoader cpb;
 
     public static synchronized ProgressDialog getInstance() {
         if (mInstance == null) {
@@ -36,10 +36,11 @@ public class ProgressDialog extends MainActivity {
         dialog.getWindow().setBackgroundDrawable(
                 new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(false);
-        cpb = (ProgressBar) dialog.findViewById(R.id.progress);
-       // cpb.startAnimation();
+        cpb = (MKLoader) dialog.findViewById(R.id.progress);
+        // cpb.startAnimation();
         try {
-            dialog.show();
+            if (null != dialog && !dialog.isShowing())
+                dialog.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -50,7 +51,7 @@ public class ProgressDialog extends MainActivity {
             if (!act.isFinishing()) {
                 try {
                     dialog.dismiss();
-                  //  cpb.dismiss();
+                    //  cpb.dismiss();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class NewArrivals {
     String id="",name="";
-    ArrayList<Products> products=new ArrayList<>();
+    ArrayList<MyProduct> products=new ArrayList<>();
 
     public String getId() {
         return id;
@@ -22,15 +22,15 @@ public class NewArrivals {
         this.name = name;
     }
 
-    public ArrayList<Products> getProducts() {
+    public ArrayList<MyProduct> getProducts() {
         return products;
     }
 
-    public void setProducts(ArrayList<Products> products) {
+    public void setProducts(ArrayList<MyProduct> products) {
         this.products = products;
     }
 
-    public NewArrivals(String id, String name, ArrayList<Products> products) {
+    public NewArrivals(String id, String name, ArrayList<MyProduct> products) {
         this.id = id;
         this.name = name;
         this.products = products;
