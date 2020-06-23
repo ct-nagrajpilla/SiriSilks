@@ -37,9 +37,9 @@ import com.aniapps.callbackclient.APIResponse;
 import com.aniapps.callbackclient.RetrofitClient;
 import com.aniapps.models.MyAreas;
 import com.aniapps.models.MyCategories;
+import com.aniapps.models.MyProduct;
 import com.aniapps.models.NewArrivals;
 import com.aniapps.models.OtherMenu;
-import com.aniapps.models.MyProduct;
 import com.aniapps.models.SubCategory;
 import com.aniapps.models.Trending;
 import com.aniapps.utils.Pref;
@@ -111,24 +111,36 @@ public class MainActivity extends AppConstants implements NavigationView.OnNavig
     public static void showBadge(Context context, BottomNavigationView
             bottomNavigationView, @IdRes int itemId, int value) {
         Log.e("####", "Value" + value);
-        removeBadge(bottomNavigationView, itemId);
+        removeBadge(bottomNavigationView, itemId,value);
         BottomNavigationItemView itemView = bottomNavigationView.findViewById(itemId);
         View badge = LayoutInflater.from(context).inflate(R.layout.badge, bottomNavigationView, false);
         TextView text = badge.findViewById(R.id.badge_text_view);
         text.setText("" + value);
-        if (value != 0) {
-            itemView.addView(badge);
-        } else {
-            itemView.removeView(badge);
-        }
+        /* if (value != 0) {*/
+        itemView.addView(badge);
+       /* } else {
+            badge.setVisibility(View.GONE);
+            //      bottomNavigationView.removeView(bottomNavigationView.getChildAt(2));
 
+            //  itemView.removeView(badge);
+        }
+*/
     }
 
 
-    public static void removeBadge(BottomNavigationView bottomNavigationView, @IdRes int itemId) {
+    /*public static void removeBadge(BottomNavigationView navigationView, int index) {
+        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) navigationView.getChildAt(0);
+        View v = bottomNavigationMenuView.getChildAt(index);
+        BottomNavigationItemView itemView = (BottomNavigationItemView) v;
+        itemView.removeViewAt(itemView.getChildCount() - 1);
+    }*/
+    public static void removeBadge(BottomNavigationView bottomNavigationView, @IdRes int itemId, int count) {
         BottomNavigationItemView itemView = bottomNavigationView.findViewById(itemId);
         if (itemView.getChildCount() == 4) {
             itemView.removeViewAt(2);
+            if (count == 0) {
+                itemView.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -251,7 +263,7 @@ public class MainActivity extends AppConstants implements NavigationView.OnNavig
         item_done.setVisible(true);
         menu_cart = item_done.getActionView();
         filter_count = menu_cart.findViewById(R.id.filter_count);
-        if(Pref.getIn().getCart_count()>0) {
+        if (Pref.getIn().getCart_count() > 0) {
             filter_count.setVisibility(View.VISIBLE);
             filter_count.setText("" + Pref.getIn().getCart_count());
         }

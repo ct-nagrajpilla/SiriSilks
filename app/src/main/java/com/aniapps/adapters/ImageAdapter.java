@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.aniapps.siri.R;
@@ -40,7 +41,7 @@ public class ImageAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         View itemView = mLayoutInflater.inflate(R.layout.pager_item, container, false);
 
-        ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
+        AppCompatImageView imageView = (AppCompatImageView) itemView.findViewById(R.id.imageView);
         imageView.setImageResource(GalImages[position]);
 
         container.addView(itemView);

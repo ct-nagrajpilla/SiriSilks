@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aniapps.siri.R;
@@ -50,11 +51,11 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private ImageView imageView;
+        private AppCompatImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.city_image);
+            imageView = (AppCompatImageView) itemView.findViewById(R.id.city_image);
 
             itemView.findViewById(R.id.container).setOnClickListener(this);
         }

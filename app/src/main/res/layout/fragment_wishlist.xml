@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_gray"
     android:orientation="vertical"
     tools:context=".Fragment_WishList">
 
@@ -13,9 +14,21 @@
         android:background="#E9E7E8"
         android:clipToPadding="false"
         android:padding="8sp"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        android:visibility="visible" />
+
+    <com.aniapps.utils.TextViewWithImages
+        android:id="@+id/tv_nowishlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20sp"
+        android:gravity="center"
+        android:text="@string/no_wishlist"
+        android:visibility="gone" />
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_placeorder"
         style="@style/tv_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +38,6 @@
         android:gravity="center"
         android:padding="8sp"
         android:text="Place Order"
-        android:id="@+id/tv_placeorder"
         android:textColor="@color/white"
         android:textSize="18sp" />
 

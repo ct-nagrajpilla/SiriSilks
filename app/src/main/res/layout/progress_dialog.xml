@@ -14,17 +14,9 @@
         android:layout_centerInParent="true"
         android:layout_centerVertical="true"
         app:mk_type="Whirlpool" />
-    <!--<ProgressBar
-        android:id="@+id/progress"
-        style="?android:attr/indeterminateProgressStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"
-        android:layout_centerVertical="true"
-        android:visibility="visible"/>-->
 
-    <TextView
+
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_progress_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

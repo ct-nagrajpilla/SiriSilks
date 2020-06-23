@@ -118,5 +118,8 @@ public class AppConstants extends AppCompatActivity {
         });
         myDialog.show();
     }
-
+    public static int dpToPx(int dp, Context context) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
+    }
 }

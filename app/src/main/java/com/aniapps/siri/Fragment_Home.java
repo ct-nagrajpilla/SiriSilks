@@ -198,27 +198,6 @@ public class Fragment_Home extends Fragment {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void addimage(int pos, int size, LinearLayout dot_layout) {
-        dot_layout.removeAllViews();
-        //  LayoutInflater in = Objects.requireNonNull(getActivity()).getLayoutInflater();
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view;
-        for (int i = 0; i < size; i++) {
-            AppCompatImageView iv;
-            view = inflater.inflate(R.layout.dotedimageview, null);
-            iv = (AppCompatImageView) view.findViewById(R.id.dotedimage);
-            if (i == pos) {
-                iv.setBackgroundResource(R.drawable.pagerindicator_red);
-            } else {
-                iv.setBackgroundResource(R.drawable.pagerindicator_white);
-            }
-            iv.setId(i);
-            dot_layout.addView(view);
-        }
-
-    }
-
     private class ImageSlidePagerAdapter extends PagerAdapter {
         private Activity context;
 
@@ -324,13 +303,7 @@ public class Fragment_Home extends Fragment {
         }
     }
 
-    /**
-     * Converting dp to pixel
-     */
-    private int dpToPx(int dp) {
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
-    }
+
 
 
     /**
@@ -445,11 +418,11 @@ public class Fragment_Home extends Fragment {
 
     }
 
-
+    int imageItem_height_calculation = 0;
+    float imageheight = 0;
     public void SetData(final NewArraivalsAdapter.ViewHolder holder, final MyProduct products, final String from) {
         holder.name.setText(products.getProduct_name());
         holder.price_offer.setText(rupeeFormat(products.getProduct_price()));
-
 
         if (products.getWishlist().equals("y")) {
             holder.product_fav.setBackgroundDrawable(getResources().getDrawable(R.mipmap.fav_done2));
@@ -461,6 +434,17 @@ public class Fragment_Home extends Fragment {
             holder.tv_addcart.setText("REMOVE CART");
         } else {
             holder.tv_addcart.setText("ADD TO CART");
+        }
+        if (imageItem_height_calculation == 0) {
+            imageItem_height_calculation = 1;
+            holder.thumbnail.getLayoutParams().height = (int) ((float) ((context
+                    .getResources().getDisplayMetrics().widthPixels - AppConstants
+                    .dpToPx(10, context)) / 2) / 0.75);
+            imageheight = (int) ((float) ((context
+                    .getResources().getDisplayMetrics().widthPixels - AppConstants
+                    .dpToPx(10, context)) / 2) / 0.75);
+        } else {
+            holder.thumbnail.getLayoutParams().height = (int) imageheight;
         }
         try {
             Glide.with(getActivity())
@@ -610,9 +594,9 @@ public class Fragment_Home extends Fragment {
                         } else {
                             pAdapter2.notifyDataSetChanged();
                         }
-                       // mNotifCount=object.getInt("cart_count");
-                     //   invalidateOptionsMenu();
-                       refreshMenu(object.getInt("cart_count"));
+                        // mNotifCount=object.getInt("cart_count");
+                        //   invalidateOptionsMenu();
+                        refreshMenu(object.getInt("cart_count"));
 
                     } else {
                         AppConstants.apiStatusRes(getActivity(), status, object);

@@ -2,7 +2,7 @@ package com.aniapps.models;
 
 public class MyProduct {
     String product_name="", product_id="",product_price="",product_quantity="",product_company="",
-            product_msg="",show_button="",product_image="",product_img_count="",wishlist="",addtocart="";
+            product_msg="",product_image="",product_img_count="",wishlist="",addtocart="";
 
     public String getProduct_name() {
         return product_name;
@@ -42,14 +42,6 @@ public class MyProduct {
 
     public void setProduct_msg(String product_msg) {
         this.product_msg = product_msg;
-    }
-
-    public String getShow_button() {
-        return show_button;
-    }
-
-    public void setShow_button(String show_button) {
-        this.show_button = show_button;
     }
 
     public String getProduct_image() {

@@ -38,6 +38,7 @@
     <string name="wishlist_api">wishlist</string>
     <string name="addtocart">addtocart</string>
     <string name="loadproduct">loadproduct</string>
+    <string name="loadallwishlist">loadallwishlist</string>
     <string name="loadallproducts">loadallproducts</string>
     <string name="host">*.akshayasarees.com</string>
     <string name="base">http://www.akshayasarees.com</string>
@@ -56,5 +57,7 @@
     <string name="dsv_ex_msg_dont_set_lm">You should not set LayoutManager on DiscreteScrollView.class instance. Library uses a special one. Just don\'t call the method.</string>
     <string name="dsv_ex_msg_adapter_wrong_recycler">InfiniteScrollAdapter is supposed to work only with DiscreteScrollView</string>
     <string name="sort">SORT</string>
+    <string name="no_wishlist">Tap on [img src=fav_none2/] on the products to shortlist them here.</string>
+
 
 </resources>

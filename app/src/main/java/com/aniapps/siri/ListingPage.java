@@ -1,6 +1,7 @@
 package com.aniapps.siri;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
@@ -33,6 +35,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
+import static com.aniapps.siri.MainActivity.bottomNavigationView;
+import static com.aniapps.siri.MainActivity.refreshMenu;
+import static com.aniapps.siri.MainActivity.showBadge;
 
 public class ListingPage extends AppConstants {
     AppCompatTextView tv_main_header, tv_sub_header;
@@ -166,10 +173,22 @@ public class ListingPage extends AppConstants {
 
 
     }
-
-    public void SetData(final MainAdapter.ViewHolder holder, MyProduct products) {
+    int imageItem_height_calculation = 0;
+    float imageheight = 0;
+    public void SetData(final MainAdapter.ViewHolder holder, final MyProduct products) {
         holder.name.setText(products.getProduct_name());
         holder.price_offer.setText(rupeeFormat(products.getProduct_price()));
+        if (imageItem_height_calculation == 0) {
+            imageItem_height_calculation = 1;
+            holder.thumbnail.getLayoutParams().height = (int) ((float) ((ListingPage.this
+                    .getResources().getDisplayMetrics().widthPixels - AppConstants
+                    .dpToPx(10, ListingPage.this)) / 2) / 0.75);
+            imageheight = (int) ((float) ((ListingPage.this
+                    .getResources().getDisplayMetrics().widthPixels - AppConstants
+                    .dpToPx(10, ListingPage.this)) / 2) / 0.75);
+        } else {
+            holder.thumbnail.getLayoutParams().height = (int) imageheight;
+        }
         try {
             Glide.with(ListingPage.this)
                     .load(products.getProduct_image())
@@ -178,6 +197,17 @@ public class ListingPage extends AppConstants {
                     .into(holder.thumbnail);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if (products.getWishlist().equals("y")) {
+            holder.product_fav.setBackgroundDrawable(getResources().getDrawable(R.mipmap.fav_done2));
+        } else {
+            holder.product_fav.setBackgroundDrawable(getResources().getDrawable(R.mipmap.fav_none2));
+        }
+
+        if (products.getAddtocart().equals("y")) {
+            holder.tv_addcart.setText("REMOVE CART");
+        } else {
+            holder.tv_addcart.setText("ADD TO CART");
         }
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,17 +220,11 @@ public class ListingPage extends AppConstants {
             @Override
             public void onClick(View v) {
                 if (!Pref.getIn().getUser_id().equals("")) {
-                    Animation animBlink = AnimationUtils.loadAnimation(ListingPage.this,
-                            R.anim.blink);
-                    animBlink.setDuration(1000);
-                    holder.product_fav.startAnimation(animBlink);
-                    holder.product_fav.setBackgroundDrawable(getResources().getDrawable(R.mipmap.fav_done2));
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            holder.product_fav.clearAnimation();
-                        }
-                    }, 1000);
+                    if (products.getWishlist().equals("n")) {
+                        wishList(products, "y", holder.product_fav);
+                    } else {
+                        wishList(products, "n", holder.product_fav);
+                    }
                 } else {
                     Intent in_login = new Intent(ListingPage.this, LoginPage.class);
                     startActivity(in_login);
@@ -211,8 +235,11 @@ public class ListingPage extends AppConstants {
             @Override
             public void onClick(View v) {
                 if (!Pref.getIn().getUser_id().equals("")) {
-                    Toast.makeText(ListingPage.this, "clicked on cart", Toast.LENGTH_SHORT).show();
-                    holder.tv_addcart.setText("REMOVE CART");
+                    if (products.getAddtocart().equals("n")) {
+                        addCart(products, "y");
+                    } else {
+                        addCart(products, "n");
+                    }
                 } else {
                     Intent in_login = new Intent(ListingPage.this, LoginPage.class);
                     startActivity(in_login);
@@ -238,5 +265,99 @@ public class ListingPage extends AppConstants {
         return ("₹ " + result + lastDigit);
     }
 
+    public void wishList(final MyProduct products, final String wish, final AppCompatImageView imageView) {
+        Map<String, String> params = new HashMap<>();
+        params.put("action", getResources().getString(R.string.wishlist_api));
+        params.put("product_id", products.getProduct_id());
+        params.put("wishlist", wish);
+        RetrofitClient.getInstance().doBackProcess(ListingPage.this, params, "", new APIResponse() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onSuccess(String Response) {
+                try {
+                    int status;
+                    JSONObject object = new JSONObject(Response);
+                    status = object.getInt("status");
+                    if (status == 1) {
+                        showBadge(ListingPage.this, bottomNavigationView, R.id.navigation_wishlist, object.getInt("wishlist_count"));
+                        if (wish.equals("n")) {
+                            Toast.makeText(ListingPage.this, "Successfully removed from wish list", Toast.LENGTH_SHORT).show();
+                            imageView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.fav_none2));
+                            products.setWishlist("n");
+                        } else {
+                            Toast.makeText(ListingPage.this, "Successfully added to wish list", Toast.LENGTH_SHORT).show();
+                            products.setWishlist("y");
+                            Animation animBlink = AnimationUtils.loadAnimation(ListingPage.this,
+                                    R.anim.blink);
+                            animBlink.setDuration(1000);
+                            imageView.startAnimation(animBlink);
+                            imageView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.fav_done2));
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    imageView.clearAnimation();
 
+                                }
+                            }, 1000);
+                        }
+                        mainAdapter.notifyDataSetChanged();
+                    } else {
+                        AppConstants.apiStatusRes(ListingPage.this, status, object);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String res) {
+                AppConstants.apiFailure(ListingPage.this, res);
+            }
+        });
+    }
+
+    public void addCart(final MyProduct products, final String cart) {
+        Map<String, String> params = new HashMap<>();
+        params.put("action", getResources().getString(R.string.addtocart));
+        params.put("product_id", products.getProduct_id());
+        params.put("cart", cart);
+        RetrofitClient.getInstance().doBackProcess(ListingPage.this, params, "", new APIResponse() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onSuccess(String Response) {
+                try {
+                    int status;
+                    JSONObject object = new JSONObject(Response);
+                    status = object.getInt("status");
+                    if (status == 1) {
+                        if (cart.equals("y")) {
+                            Toast.makeText(ListingPage.this, "Successfully added to cart", Toast.LENGTH_SHORT).show();
+                            products.setAddtocart("y");
+                        } else {
+                            Toast.makeText(ListingPage.this, "Successfully removed from cart", Toast.LENGTH_SHORT).show();
+                            products.setAddtocart("n");
+                        }
+                        mainAdapter.notifyDataSetChanged();
+                        refreshMenu(object.getInt("cart_count"));
+                        Pref.getIn().setCart_count(object.getInt("cart_count"));
+                        if (Pref.getIn().getCart_count() > 0) {
+                            ((AppCompatTextView) findViewById(R.id.filter_count)).setVisibility(View.VISIBLE);
+                            ((AppCompatTextView) findViewById(R.id.filter_count)).setText("" + Pref.getIn().getCart_count());
+                        } else {
+                            ((AppCompatTextView) findViewById(R.id.filter_count)).setVisibility(View.GONE);
+                        }
+                    } else {
+                        AppConstants.apiStatusRes(ListingPage.this, status, object);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String res) {
+                AppConstants.apiFailure(ListingPage.this, res);
+            }
+        });
+    }
 }

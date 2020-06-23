@@ -204,7 +204,7 @@ public class DetailsPage extends AppCompatActivity {
         product.setProduct_all_images(myImages);
         product.setProduct_id("123");
         product.setProduct_name("Cotton Silk Traditional Saree");
-        product.setProduct_details("https://testlb.cartradeexchange.com//mob//auctionlivesingle//oKqYwR1HP7Ce8D5jfgY6lkD19biW1HjIJLjE4OlFvdk//cteappv");
+        product.setProduct_details("http://akshayasarees.com/sirisilks/demo/product-details_webview.html");
 
 
         setLCImages(product);
